@@ -1,0 +1,9 @@
+replicaCount: 3
+
+image:
+  repository: ldt-api
+  pullPolicy: IfNotPresent
+
+service:
+  type: NodePort
+  port: 9080

@@ -1,0 +1,17 @@
+apiVersion: k3d.io/v1alpha5
+kind: Simple
+metadata:
+  name: k3s-ldt
+image: rancher/k3s:v1.27.1-k3s1
+servers: 1
+agents: 1
+ports:
+  - port: 9080:30080
+    nodeFilters:
+      - agent:0:direct
+options:
+  k3d:
+    disableLoadbalancer: true
+  kubeconfig:
+    updateDefaultKubeconfig: false
+    switchCurrentContext: false
