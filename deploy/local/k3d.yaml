@@ -6,7 +6,7 @@ image: rancher/k3s:v1.27.1-k3s1
 servers: 1
 agents: 1
 ports:
-  - port: 9080:30080
+  - port: 30080:30080
     nodeFilters:
       - agent:0:direct
 options:
