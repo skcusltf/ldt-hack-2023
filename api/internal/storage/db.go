@@ -27,6 +27,15 @@ func (db *Database) Close() {
 	db.pool.Close()
 }
 
+// Ping pings the database. Used for healthchecks.
+func (db *Database) Ping(ctx context.Context) error {
+	if err := db.pool.Ping(ctx); err != nil {
+		return fmt.Errorf("ping failed: %w", err)
+	}
+
+	return nil
+}
+
 func (db *Database) Select(ctx context.Context) (string, error) {
 	const query = `select 'hello from postgres'`
 

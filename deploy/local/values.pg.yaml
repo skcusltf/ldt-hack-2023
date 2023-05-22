@@ -1,0 +1,4 @@
+auth:
+  username: ldt-api
+  password: password
+  database: ldt-api

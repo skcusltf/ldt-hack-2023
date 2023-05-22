@@ -9,6 +9,9 @@ ports:
   - port: 30080:30080
     nodeFilters:
       - agent:0:direct
+  - port: 30081:30081
+    nodeFilters:
+      - agent:0:direct
 options:
   k3d:
     disableLoadbalancer: true

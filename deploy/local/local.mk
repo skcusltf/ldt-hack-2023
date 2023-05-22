@@ -40,3 +40,8 @@ local.api.upgrade: local.api.build local.api.import
 .PHONY: local.api.down
 local.api.down:
 	helm uninstall ldt-api
+
+.PHONY: local.pg.up
+local.pg.up:
+	helm install -f $(LOCAL_DIR)/values.pg.yaml pg oci://registry-1.docker.io/bitnamicharts/postgresql
+	kubectl create secret generic postgres-dsn --from-literal='value=postgres://ldt-api:password@pg-postgresql:5432/ldt-api'

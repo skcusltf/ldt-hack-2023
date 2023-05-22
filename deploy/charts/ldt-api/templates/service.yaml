@@ -7,10 +7,12 @@ metadata:
 spec:
   type: NodePort
   ports:
-    - port: {{ .Values.service.port }}
-      nodePort: 30080
-      targetPort: http
+    {{ range .Values.service.ports }}
+    - port: {{ .port }}
+      nodePort: {{ .node }}
+      targetPort: {{ .name }}
       protocol: TCP
-      name: http
+      name: {{ .name }}
+    {{ end }}
   selector:
     {{- include "ldt-api.selectorLabels" . | nindent 4 }}

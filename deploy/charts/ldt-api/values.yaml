@@ -4,6 +4,15 @@ image:
   repository: ldt-api
   pullPolicy: IfNotPresent
 
+secrets:
+  postgres_dsn: "postgres-dsn"
+
 service:
   type: NodePort
-  port: 9080
+  ports:
+    - name: http
+      port: 9080
+      node: 30080
+    - name: grpc
+      port: 9081
+      node: 30081

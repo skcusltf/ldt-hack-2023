@@ -2,10 +2,13 @@ package main
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"net"
+	"net/http"
 	"os"
 	"os/signal"
+	"sync"
 	"syscall"
 	"time"
 
@@ -14,6 +17,7 @@ import (
 	"ldt-hack/api/internal/platform/config"
 	"ldt-hack/api/internal/storage"
 
+	"github.com/gin-gonic/gin"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"golang.org/x/exp/slog"
@@ -23,6 +27,7 @@ import (
 )
 
 const (
+	httpHeaderTimeout       = time.Second * 5
 	maxConnectionIdle       = time.Minute
 	gracefulShutdownTimeout = time.Second * 5
 )
@@ -59,12 +64,19 @@ func runAPI(ctx context.Context, logger *slog.Logger) error {
 	grpcAddr := viper.GetString(config.GRPCAddr)
 	grpcServer, grpcCh, err := startGRPC(grpcAddr, authService)
 	if err != nil {
-		return err
+		return fmt.Errorf("starting gRPC server: %w", err)
 	}
+
+	// Initialize HTTP server
+	httpAddr := viper.GetString(config.HTTPAddr)
+	httpServer, httpCh := startHTTP(httpAddr,
+		platform.HealthHandler(db.Ping),
+	)
 
 	logger.Info(
 		"all components initialized and started",
 		"grpc_addr", grpcAddr,
+		"http_addr", httpAddr,
 	)
 
 	// Listen for shutdown signals
@@ -74,15 +86,35 @@ func runAPI(ctx context.Context, logger *slog.Logger) error {
 	select {
 	case err := <-grpcCh:
 		logger.Error("critical error while serving gRPC, will perform shutdown", "error", err)
+	case err := <-httpCh:
+		logger.Error("critical error while serving HTTP, will perform shutdown", "error", err)
 	case <-exitCh:
 		logger.Info("gracefully shutting down all components", "timeout", gracefulShutdownTimeout.String())
 	}
 
 	// Launch graceful shutdowns and wait for some time
+	var shutdownWg sync.WaitGroup
+
+	shutdownWg.Add(1)
+	go func() {
+		defer shutdownWg.Done()
+		grpcServer.GracefulStop()
+	}()
+
+	shutdownWg.Add(1)
+	go func() {
+		defer shutdownWg.Done()
+
+		ctx, cancel := context.WithTimeout(context.Background(), gracefulShutdownTimeout)
+		defer cancel()
+
+		_ = httpServer.Shutdown(ctx)
+	}()
+
 	shutdownDone := make(chan struct{})
 	go func() {
-		defer close(shutdownDone)
-		grpcServer.GracefulStop()
+		shutdownWg.Wait()
+		close(shutdownDone)
 	}()
 
 	select {
@@ -118,5 +150,31 @@ func startGRPC(addr string, authService *auth.Service) (*grpc.Server, chan error
 		close(ch)
 	}()
 
-	return server, ch, err
+	return server, ch, nil
+}
+
+func startHTTP(addr string, health http.Handler) (*http.Server, chan error) {
+	gin.SetMode(gin.ReleaseMode)
+	engine := gin.New()
+
+	engine.GET("/health", gin.WrapH(health))
+
+	server := &http.Server{
+		Addr:              addr,
+		Handler:           engine,
+		ReadHeaderTimeout: httpHeaderTimeout,
+		IdleTimeout:       maxConnectionIdle,
+	}
+
+	ch := make(chan error)
+	go func() {
+		if err := server.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
+			ch <- err
+		} else {
+			ch <- nil
+		}
+		close(ch)
+	}()
+
+	return server, ch
 }
