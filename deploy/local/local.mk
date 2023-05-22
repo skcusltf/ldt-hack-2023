@@ -34,7 +34,7 @@ local.api.up: local.api.build local.api.import
 	helm install $(LOCAL_HELM_ARGS)
 
 .PHONY: local.api.upgrade
-local.api.upgrade:
+local.api.upgrade: local.api.build local.api.import
 	helm upgrade $(LOCAL_HELM_ARGS)
 
 .PHONY: local.api.down

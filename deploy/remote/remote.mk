@@ -1,5 +1,5 @@
 REMOTE_REPOSITORY := swr.ru-moscow-1.hc.sbercloud.ru/skcusltf-lct-23-track-2
-REMOTE_HELM_ARGS := -f $(REMOTE_DIR)/values.yaml ldt-api-$(release) $(CHART_DIR)/ldt-api
+REMOTE_HELM_ARGS := -f $(REMOTE_DIR)/values.yaml ldt-api $(CHART_DIR)/ldt-api
 
 .PHONY: remote.api.build
 remote.api.build:
@@ -11,7 +11,7 @@ remote.api.up: remote.api.build
 	helm install $(REMOTE_HELM_ARGS)
 
 .PHONY: remote.api.upgrade
-remote.api.upgrade:
+remote.api.upgrade: remote.api.build
 	helm upgrade $(REMOTE_HELM_ARGS)
 
 .PHONY: remote.api.down
