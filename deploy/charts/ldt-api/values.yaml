@@ -16,3 +16,5 @@ service:
     - name: grpc
       port: 9081
       node: 30081
+
+imagePullSecrets: false
