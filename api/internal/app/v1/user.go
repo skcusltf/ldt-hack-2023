@@ -25,6 +25,7 @@ var (
 	errUserUnknownSex        = status.Error(codes.InvalidArgument, "Указан неизвестный пол")
 )
 
+// CreateBusinessUser implements the business user creation endpoint.
 func (s *Service) CreateBusinessUser(ctx context.Context, req *desc.CreateBusinessUserRequest) (*desc.SessionToken, error) {
 	if !govalidator.IsEmail(req.Email) {
 		return nil, errCreateInvalidEmail
@@ -67,11 +68,10 @@ func (s *Service) CreateBusinessUser(ctx context.Context, req *desc.CreateBusine
 		return nil, errInternal
 	}
 
-	token, err := s.authorizer.Construct(Session{AccountID: accountID, AccountType: storage.AccountTypeBusiness})
-	if err != nil {
-		s.logger.Error("failed to construct user token after account creation", "account_id", accountID, "error", err)
+	session := s.constructSession("creation", accountID, storage.AccountTypeBusiness)
+	if session == nil {
 		return nil, errInternal
 	}
 
-	return &desc.SessionToken{Token: token}, nil
+	return session, nil
 }

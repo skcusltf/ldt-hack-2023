@@ -25,3 +25,15 @@ func (db *Database) CheckAccountExists(ctx context.Context, accountID int64, acc
 
 	return exists, nil
 }
+
+// GetAccount returns the account with the specified email and type
+func (db *Database) GetAccount(ctx context.Context, email string, accountType AccountType) (Account, error) {
+	var account Account
+	err := db.bun.NewSelect().Model(&account).
+		Where("email = ?", email).Where("type = ?", accountType).Scan(ctx)
+	if err != nil {
+		return Account{}, wrapError("GetAccountPasswordHash", err)
+	}
+
+	return account, nil
+}

@@ -182,7 +182,7 @@ func startGRPC(addr string,
 				logging.LoggerFunc(func(ctx context.Context, level logging.Level, msg string, fields ...any) {
 					logger.Log(ctx, slog.Level(level), msg, fields...)
 				}),
-				logging.WithLogOnEvents(logging.PayloadReceived, logging.FinishCall),
+				logging.WithLogOnEvents(logging.StartCall, logging.FinishCall),
 			),
 			auth.UnaryInterceptor[app.Session](authorizer,
 				"/ldt_hack.app.v1.AppService/CreateBusinessUser",
