@@ -44,4 +44,4 @@ local.api.down:
 .PHONY: local.pg.up
 local.pg.up:
 	helm install -f $(LOCAL_DIR)/values.pg.yaml pg oci://registry-1.docker.io/bitnamicharts/postgresql
-	kubectl create secret generic postgres-dsn --from-literal='value=postgres://ldt-api:password@pg-postgresql:5432/ldt-api'
+	kubectl create secret generic postgres-dsn --from-literal='value=postgres://ldt-api:password@pg-postgresql:5432/ldt-api?sslmode=disable'

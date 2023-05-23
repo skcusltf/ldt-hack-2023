@@ -14,6 +14,7 @@ import (
 var (
 	errInternal      = status.Error(codes.Internal, "Приложению плохо, попробуйте повторить немного позже!")
 	errMissingFields = status.Error(codes.InvalidArgument, "Необходимо заполнить все обязательные поля")
+	errUnauthorized  = status.Error(codes.PermissionDenied, "Необходимо авторизоваться для работы с приложением")
 )
 
 // Service implements the main application gRPC service logic.

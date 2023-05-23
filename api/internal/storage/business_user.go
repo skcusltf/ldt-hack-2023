@@ -49,3 +49,14 @@ func (db *Database) CreateBusinessUser(ctx context.Context, email string, passwo
 
 	return account.ID, nil
 }
+
+// GetBusinessUser gets the business user's information by account ID.
+func (db *Database) GetBusinessUser(ctx context.Context, accountID int64) (BusinessUser, error) {
+	var user BusinessUser
+	err := db.bun.NewSelect().Model(&user).Where("account_id = ?", accountID).Scan(ctx)
+	if err != nil {
+		return BusinessUser{}, wrapError("GetBusinessUser", err)
+	}
+
+	return user, nil
+}

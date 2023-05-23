@@ -97,7 +97,7 @@ func (a *Authorizer) verifyAndParse(jwtString string, dest any) bool {
 		return false
 	}
 
-	if err := token.Claims(a.key, dest); err != nil {
+	if err := token.Claims(&a.key.PublicKey, dest); err != nil {
 		return false
 	}
 

@@ -2,14 +2,16 @@ package app
 
 import (
 	"context"
-	"fmt"
 
+	"ldt-hack/api/internal/auth"
 	"ldt-hack/api/internal/crypto"
 	desc "ldt-hack/api/internal/pb/app/v1"
 	"ldt-hack/api/internal/storage"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/types/known/emptypb"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 var (
@@ -47,6 +49,44 @@ func (s *Service) CreateSession(ctx context.Context, req *desc.CreateSessionRequ
 	return session, nil
 }
 
+// GetSessionUser gets the authorized users' info.
+func (s *Service) GetSessionUser(ctx context.Context, _ *emptypb.Empty) (*desc.GetSessionUserResponse, error) {
+	session, authorized := s.authorizeSession(ctx)
+	if !authorized {
+		return nil, errUnauthorized
+	}
+
+	var businessUser *desc.BusinessUser
+	var err error
+
+	if session.AccountType == storage.AccountTypeBusiness {
+		var user storage.BusinessUser
+		user, err = s.db.GetBusinessUser(ctx, session.AccountID)
+
+		businessUser = &desc.BusinessUser{
+			FirstName:      user.FirstName,
+			PatronymicName: user.PatronymicName,
+			LastName:       user.LastName,
+			BirthDate:      timestamppb.New(user.BirthDate),
+			Sex:            personSexFromStorage[user.Sex],
+			BusinessName:   user.BusinessName,
+		}
+	}
+	// TODO: support authority account type
+
+	if err != nil {
+		s.logger.Error("failed to retrieve authorized user info from db", "account_id", session.AccountID, "error", err)
+		return nil, errInternal
+	}
+
+	resp := &desc.GetSessionUserResponse{}
+	if businessUser != nil {
+		resp.User = &desc.GetSessionUserResponse_Business{Business: businessUser}
+	}
+
+	return resp, nil
+}
+
 func (s *Service) constructSession(operation string, accountID int64, accountType storage.AccountType) *desc.SessionToken {
 	token, err := s.authorizer.Construct(Session{AccountID: accountID, AccountType: storage.AccountTypeBusiness})
 	if err != nil {
@@ -57,17 +97,27 @@ func (s *Service) constructSession(operation string, accountID int64, accountTyp
 	return &desc.SessionToken{Token: token}
 }
 
-func (s *Service) authorizeSession(ctx context.Context, session Session, accountType ...storage.AccountType) (bool, error) {
+func (s *Service) authorizeSession(ctx context.Context, accountType ...storage.AccountType) (Session, bool) {
+	session := auth.ClaimsFromCtx[Session](ctx)
+	if session == (Session{}) {
+		return Session{}, false
+	}
+
 	if len(accountType) >= 1 && session.AccountType != accountType[0] {
-		return false, nil
+		return Session{}, false
 	}
 
 	exists, err := s.db.CheckAccountExists(ctx, session.AccountID, session.AccountType)
 	if err != nil {
-		return false, fmt.Errorf("checking whether session account %d, %s exists in db: %w",
-			session.AccountID, session.AccountType, err,
+		s.logger.Error("failed to check session account in db",
+			"account_id", session.AccountID,
+			"account_type", session.AccountType,
+			"error", err,
 		)
+		return Session{}, false
+	} else if !exists {
+		return Session{}, false
 	}
 
-	return exists, nil
+	return session, true
 }
