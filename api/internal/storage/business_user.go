@@ -61,3 +61,13 @@ func (db *Database) GetBusinessUser(ctx context.Context, accountID int64) (Busin
 
 	return user, nil
 }
+
+// UpdateBusinessUser updates all of the information of a business user.
+func (db *Database) UpdateBusinessUser(ctx context.Context, user BusinessUser) error {
+	_, err := db.bun.NewUpdate().Model(&user).OmitZero().Where("account_id = ?", user.AccountID).Returning("").Exec(ctx)
+	if err != nil {
+		return wrapError("UpdateBusinessUser", err)
+	}
+
+	return nil
+}

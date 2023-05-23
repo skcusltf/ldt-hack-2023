@@ -32,19 +32,8 @@ func (s *Service) CreateBusinessUser(ctx context.Context, req *desc.CreateBusine
 		return nil, errCreateInvalidEmail
 	} else if len(req.Password) < minPasswordLen || len(req.Password) > maxPasswordLen {
 		return nil, errCreateInvalidPassword
-	}
-
-	if req.User == nil ||
-		req.User.FirstName == "" ||
-		req.User.LastName == "" ||
-		!req.User.BirthDate.IsValid() ||
-		req.User.BusinessName == "" {
-		return nil, errMissingFields
-	}
-
-	personSex, ok := personSexToStorage[req.User.Sex]
-	if !ok {
-		return nil, errUserUnknownSex
+	} else if err := validateBusinessUserFields(req.User); err != nil {
+		return nil, err
 	}
 
 	passwordHash, err := crypto.HashPassword(req.Password)
@@ -53,14 +42,7 @@ func (s *Service) CreateBusinessUser(ctx context.Context, req *desc.CreateBusine
 		return nil, errInternal
 	}
 
-	storageUser := storage.BusinessUser{
-		FirstName:      req.User.FirstName,
-		PatronymicName: req.User.PatronymicName,
-		LastName:       req.User.LastName,
-		Sex:            personSex,
-		BirthDate:      req.User.BirthDate.AsTime(),
-		BusinessName:   req.User.BusinessName,
-	}
+	storageUser := businessUserToStorage(req.User)
 	accountID, err := s.db.CreateBusinessUser(ctx, req.Email, passwordHash, storageUser)
 	if errors.Is(err, storage.ErrAlreadyExists) {
 		return nil, errCreateEmailTaken
@@ -77,6 +59,29 @@ func (s *Service) CreateBusinessUser(ctx context.Context, req *desc.CreateBusine
 	return session, nil
 }
 
+// UpdateBusinessUser implements the endpoint for updating a business user's information.
+func (s *Service) UpdateBusinessUser(ctx context.Context, req *desc.UpdateBusinessUserRequest) (*emptypb.Empty, error) {
+	session, authorized := s.authorizeSession(ctx, storage.AccountTypeBusiness)
+	if !authorized {
+		return nil, errUnauthorized
+	}
+
+	if err := validateBusinessUserFields(req.User); err != nil {
+		return nil, err
+	}
+
+	storageUser := businessUserToStorage(req.User)
+	storageUser.AccountID = session.AccountID
+
+	if err := s.db.UpdateBusinessUser(ctx, storageUser); err != nil {
+		s.logger.Error("failed to update business user in db", "user", storageUser, "error", err)
+		return nil, errInternal
+	}
+
+	return &emptypb.Empty{}, nil
+}
+
+// DeleteBusinessUser implements the endpoint for deleting a business user's account.
 func (s *Service) DeleteBusinessUser(ctx context.Context, _ *emptypb.Empty) (*emptypb.Empty, error) {
 	session, authorized := s.authorizeSession(ctx, storage.AccountTypeBusiness)
 	if !authorized {
@@ -89,4 +94,31 @@ func (s *Service) DeleteBusinessUser(ctx context.Context, _ *emptypb.Empty) (*em
 	}
 
 	return &emptypb.Empty{}, nil
+}
+
+func validateBusinessUserFields(user *desc.BusinessUser) error {
+	if user == nil ||
+		user.FirstName == "" ||
+		user.LastName == "" ||
+		!user.BirthDate.IsValid() ||
+		user.BusinessName == "" {
+		return errMissingFields
+	}
+
+	if _, ok := personSexToStorage[user.Sex]; !ok {
+		return errUserUnknownSex
+	}
+
+	return nil
+}
+
+func businessUserToStorage(user *desc.BusinessUser) storage.BusinessUser {
+	return storage.BusinessUser{
+		FirstName:      user.FirstName,
+		PatronymicName: user.PatronymicName,
+		LastName:       user.LastName,
+		Sex:            personSexToStorage[user.Sex],
+		BirthDate:      user.BirthDate.AsTime(),
+		BusinessName:   user.BusinessName,
+	}
 }
