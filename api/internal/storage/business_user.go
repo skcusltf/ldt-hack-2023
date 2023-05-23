@@ -3,6 +3,7 @@ package storage
 import (
 	"context"
 	"database/sql"
+	"fmt"
 	"time"
 
 	"github.com/uptrace/bun"
@@ -44,7 +45,7 @@ func (db *Database) CreateBusinessUser(ctx context.Context, email string, passwo
 		return nil
 	})
 	if err != nil {
-		return 0, err
+		return 0, fmt.Errorf("executing transaction: %w", err)
 	}
 
 	return account.ID, nil

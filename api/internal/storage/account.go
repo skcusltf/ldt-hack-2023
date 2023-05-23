@@ -2,6 +2,8 @@ package storage
 
 import (
 	"context"
+	"database/sql"
+	"fmt"
 
 	"github.com/uptrace/bun"
 )
@@ -35,4 +37,30 @@ func (db *Database) GetAccount(ctx context.Context, email string, accountType Ac
 	}
 
 	return account, nil
+}
+
+// DeleteAccount deletes the account and removes the reference to it from other tables.
+// Information about the actual users isn't deleted so that inspectors/users can view info
+// about the previous consultations even if the user is now gone.
+func (db *Database) DeleteAccount(ctx context.Context, accountID int64) error {
+	err := db.bun.RunInTx(ctx, &sql.TxOptions{ReadOnly: false}, func(ctx context.Context, tx bun.Tx) error {
+		_, err := tx.NewUpdate().Model((*BusinessUser)(nil)).
+			Where("account_id  = ?", accountID).Set("account_id = ?", nil).Returning("").Exec(ctx)
+		if err != nil {
+			return wrapError("DeleteAccount.BusinessUser", err)
+		}
+
+		_, err = tx.NewDelete().Model((*Account)(nil)).
+			Where("id = ?", accountID).Returning("").Exec(ctx)
+		if err != nil {
+			return wrapError("DeleteAccount.Account", err)
+		}
+
+		return nil
+	})
+	if err != nil {
+		return fmt.Errorf("executing transaction: %w", err)
+	}
+
+	return nil
 }

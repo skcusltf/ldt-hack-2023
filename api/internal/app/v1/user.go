@@ -11,6 +11,7 @@ import (
 	"github.com/asaskevich/govalidator"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/types/known/emptypb"
 )
 
 const (
@@ -74,4 +75,18 @@ func (s *Service) CreateBusinessUser(ctx context.Context, req *desc.CreateBusine
 	}
 
 	return session, nil
+}
+
+func (s *Service) DeleteBusinessUser(ctx context.Context, _ *emptypb.Empty) (*emptypb.Empty, error) {
+	session, authorized := s.authorizeSession(ctx, storage.AccountTypeBusiness)
+	if !authorized {
+		return nil, errUnauthorized
+	}
+
+	if err := s.db.DeleteAccount(ctx, session.AccountID); err != nil {
+		s.logger.Error("failed to delete business user's account", "account_id", session.AccountID, "error", err)
+		return nil, errInternal
+	}
+
+	return &emptypb.Empty{}, nil
 }
