@@ -1,0 +1,86 @@
+syntax = "proto3";
+
+package ldt_hack.app.v1;
+option go_package = "ldt-hack/api/app/v1";
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+
+service AppService {
+  // CreateBusinessUser is a public endpoint for creating a new business user account.
+  // An initialized session token is returned on success.
+  rpc CreateBusinessUser(CreateBusinessUserRequest) returns (SessionToken);
+  // UpdateBusinessUser is an authenticated endpoint which updates the currently authenticated business user's information.
+  rpc UpdateBusinessUser(UpdateBusinessUserRequest) returns (google.protobuf.Empty);
+  // DeleteBusinessUser is an authenticated endpoint which deletes the currently authenticated business user's account.
+  // Information about the user is stored for retrieval in already passed consultations, however,
+  // the user will not be able to login anymore.
+  rpc DeleteBusinessUser(google.protobuf.Empty) returns (google.protobuf.Empty);
+
+  // CreateSession is a public endpoint for creating a new session for an existing user account,
+  // both for businesses and authorities. An initialized session token is returned on success.
+  rpc CreateSession(CreateSessionRequest) returns (SessionToken);
+  // GetSessionUser is an authenticated endpoint which returns the information about the currently authenticated user. 
+  rpc GetSessionUser(google.protobuf.Empty) returns (GetSessionUserResponse);
+}
+
+// Represents a person's sex. Only displayed for business users.
+enum PersonSex {
+  PERSON_SEX_MALE = 0;
+  PERSON_SEX_FEMALE = 1;
+}
+
+// Represents all of the information related to a business user.
+message BusinessUser {
+  string first_name = 1;
+  string patronymic_name = 2;
+  string last_name = 3;
+  PersonSex sex = 4;
+  google.protobuf.Timestamp birth_date = 5;
+  string business_name = 6;
+}
+
+// Represents all of the information related to an authority user.
+message AuthorityUser {
+  string first_name = 1;
+  string last_name = 2;
+  string authority_name = 3;
+}
+
+// Session token required for authenticated requests after session has been created.
+message SessionToken {
+  string token = 1;
+}
+
+// The business user creation request.
+message CreateBusinessUserRequest {
+  string email = 1;
+  string password = 2;
+  BusinessUser user = 3;
+}
+
+// The request to update the current business user's information.
+// All fields must be supplied, using the originally retrieved info if they haven't changed.
+message UpdateBusinessUserRequest {
+  BusinessUser user = 1;
+}
+
+// The session creation request for an already created user.
+message CreateSessionRequest {
+  enum SessionUser {
+    SESSION_USER_BUSINESS = 0;
+    SESSION_USER_AUTHORITY = 1;
+  }
+
+  SessionUser session_user = 1;
+  string email = 2;
+  string password = 3;
+}
+
+// The session user information retrieval response.
+message GetSessionUserResponse {
+  oneof user {
+    BusinessUser business = 1;
+    AuthorityUser authority = 2;
+  };
+}

@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "ldt-api.fullname" . }}
+  labels:
+    {{- include "ldt-api.labels" . | nindent 4 }}
+spec:
+  type: NodePort
+  ports:
+    {{ range .Values.service.ports }}
+    - port: {{ .port }}
+      nodePort: {{ .node }}
+      targetPort: {{ .name }}
+      protocol: TCP
+      name: {{ .name }}
+    {{ end }}
+  selector:
+    {{- include "ldt-api.selectorLabels" . | nindent 4 }}
