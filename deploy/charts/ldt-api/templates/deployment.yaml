@@ -18,6 +18,10 @@ spec:
       imagePullSecrets:
         - name: default-secret
       {{- end }}
+      volumes:
+        - name: session-jwt
+          secret:
+            secretName: session-jwt
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
@@ -28,6 +32,10 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.secrets.postgres_dsn }}
                   key: value
+          volumeMounts:
+            - name: session-jwt
+              mountPath: "/var/run/secrets"
+              readOnly: true
           ports:
             {{ range .Values.service.ports }}
             - name: {{ .name }}

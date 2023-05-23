@@ -23,11 +23,11 @@ local.cluster.down:
 
 .PHONY: local.api.build
 local.api.build:
-	docker build -f $(DOCKERFILE_DIR)/Dockerfile.api -t ldt-api:latest ./api
+	docker build -f $(DOCKERFILE_DIR)/Dockerfile.api -t ldt-api:$(tag) ./api
 
 .PHONY: local.api.import
 local.api.import:
-	k3d image -c $(LOCAL_KUBE_CLUSTER) import ldt-api:latest
+	k3d image -c $(LOCAL_KUBE_CLUSTER) import ldt-api:$(tag)
 
 .PHONY: local.api.up
 local.api.up: local.api.build local.api.import
