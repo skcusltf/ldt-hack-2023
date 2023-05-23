@@ -2,47 +2,50 @@ package storage
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 
-	"github.com/georgysavva/scany/v2/pgxscan"
-	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/uptrace/bun"
+	"github.com/uptrace/bun/dialect/pgdialect"
+	"github.com/uptrace/bun/driver/pgdriver"
 )
 
+const maxOpenConns = 16
+
 type Database struct {
-	pool *pgxpool.Pool
+	bun *bun.DB
 }
 
 // Open connects to a database using the specified DSN.
 func Open(ctx context.Context, dsn string) (*Database, error) {
-	pool, err := pgxpool.New(ctx, dsn)
-	if err != nil {
-		return nil, fmt.Errorf("connecting to database: %w", err)
+	sqldb := sql.OpenDB(pgdriver.NewConnector(pgdriver.WithDSN(dsn)))
+	sqldb.SetMaxOpenConns(maxOpenConns)
+	sqldb.SetMaxIdleConns(maxOpenConns)
+
+	bundb := bun.NewDB(sqldb, pgdialect.New(), bun.WithDiscardUnknownColumns())
+
+	db := &Database{bundb}
+	if err := db.Ping(ctx); err != nil {
+		return nil, err
 	}
 
-	return &Database{pool}, nil
+	return db, nil
 }
 
 // Close closes an active database.
-func (db *Database) Close() {
-	db.pool.Close()
-}
-
-// Ping pings the database. Used for healthchecks.
-func (db *Database) Ping(ctx context.Context) error {
-	if err := db.pool.Ping(ctx); err != nil {
-		return fmt.Errorf("ping failed: %w", err)
+func (db *Database) Close() error {
+	if err := db.bun.Close(); err != nil {
+		return fmt.Errorf("closing database: %w", err)
 	}
 
 	return nil
 }
 
-func (db *Database) Select(ctx context.Context) (string, error) {
-	const query = `select 'hello from postgres'`
-
-	var s string
-	if err := pgxscan.Get(ctx, db.pool, &s, query); err != nil {
-		return "", wrapError("Select", err)
+// Ping pings the database. Used for healthchecks.
+func (db *Database) Ping(ctx context.Context) error {
+	if err := db.bun.PingContext(ctx); err != nil {
+		return fmt.Errorf("ping failed: %w", err)
 	}
 
-	return s, nil
+	return nil
 }

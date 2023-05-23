@@ -2,6 +2,9 @@ package main
 
 import (
 	"context"
+	"crypto/ecdsa"
+	"crypto/x509"
+	"encoding/pem"
 	"errors"
 	"fmt"
 	"net"
@@ -12,12 +15,14 @@ import (
 	"syscall"
 	"time"
 
-	"ldt-hack/api/internal/app/auth"
+	"ldt-hack/api/internal/app/v1"
+	"ldt-hack/api/internal/auth"
 	"ldt-hack/api/internal/platform"
 	"ldt-hack/api/internal/platform/config"
 	"ldt-hack/api/internal/storage"
 
 	"github.com/gin-gonic/gin"
+	"github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/logging"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"golang.org/x/exp/slog"
@@ -46,7 +51,7 @@ var rootCmd = &cobra.Command{
 
 func main() {
 	if err := rootCmd.Execute(); err != nil {
-		platform.NewLogger("").Error("executing root command: %v", err)
+		platform.NewLogger("").Error(fmt.Sprintf("executing root command: %v", err))
 	}
 }
 
@@ -57,12 +62,23 @@ func runAPI(ctx context.Context, logger *slog.Logger) error {
 		return fmt.Errorf("opening storage: %w", err)
 	}
 
+	// Initialize authorizer
+	jwtKey, err := readJWTKey(viper.GetString(config.JWTPath))
+	if err != nil {
+		return err
+	}
+
+	authorizer, err := auth.NewAuthorizer(jwtKey)
+	if err != nil {
+		return fmt.Errorf("creating authorizer: %w", err)
+	}
+
 	// Initialize gRPC services
-	authService := auth.NewService(logger, db)
+	appService := app.NewService(logger, db, authorizer)
 
 	// Initialize actual gRPC server
 	grpcAddr := viper.GetString(config.GRPCAddr)
-	grpcServer, grpcCh, err := startGRPC(grpcAddr, authService)
+	grpcServer, grpcCh, err := startGRPC(grpcAddr, logger, authorizer, appService)
 	if err != nil {
 		return fmt.Errorf("starting gRPC server: %w", err)
 	}
@@ -130,7 +146,29 @@ func runAPI(ctx context.Context, logger *slog.Logger) error {
 	return nil
 }
 
-func startGRPC(addr string, authService *auth.Service) (*grpc.Server, chan error, error) {
+func readJWTKey(path string) (*ecdsa.PrivateKey, error) {
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return nil, fmt.Errorf("reading JWT private key from %s: %w", path, err)
+	}
+
+	block, _ := pem.Decode(data)
+	if block == nil {
+		return nil, fmt.Errorf("failed to decode JWT private key from %s as PEM", path)
+	}
+
+	key, err := x509.ParseECPrivateKey(block.Bytes)
+	if err != nil {
+		return nil, fmt.Errorf("parsing JWT private key from %s as ECDSA private key: %w", path, err)
+	}
+
+	return key, nil
+}
+
+func startGRPC(addr string,
+	logger *slog.Logger, authorizer *auth.Authorizer,
+	appService *app.Service,
+) (*grpc.Server, chan error, error) {
 	listener, err := net.Listen("tcp", addr)
 	if err != nil {
 		return nil, nil, fmt.Errorf("listening on bind address %q: %w", addr, err)
@@ -139,9 +177,21 @@ func startGRPC(addr string, authService *auth.Service) (*grpc.Server, chan error
 	// Basic gRPC server with limited idle
 	server := grpc.NewServer(
 		grpc.KeepaliveParams(keepalive.ServerParameters{MaxConnectionIdle: maxConnectionIdle}),
+		grpc.ChainUnaryInterceptor(
+			logging.UnaryServerInterceptor(
+				logging.LoggerFunc(func(ctx context.Context, level logging.Level, msg string, fields ...any) {
+					logger.Log(ctx, slog.Level(level), msg, fields...)
+				}),
+				logging.WithLogOnEvents(logging.PayloadReceived, logging.FinishCall),
+			),
+			auth.UnaryInterceptor[app.Session](authorizer,
+				"/ldt_hack.app.v1.AppService/CreateBusinessUser",
+				"/ldt_hack.app.v1.AppService/CreateSession",
+			),
+		),
 	)
 	reflection.Register(server)
-	authService.RegisterServer(server)
+	appService.RegisterServer(server)
 
 	// Setup error channel and run server
 	ch := make(chan error)
