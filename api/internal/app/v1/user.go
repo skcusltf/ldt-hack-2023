@@ -101,7 +101,8 @@ func validateBusinessUserFields(user *desc.BusinessUser) error {
 		user.FirstName == "" ||
 		user.LastName == "" ||
 		!user.BirthDate.IsValid() ||
-		user.BusinessName == "" {
+		user.BusinessName == "" ||
+		user.PhoneNumber == "" {
 		return errMissingFields
 	}
 
@@ -120,5 +121,6 @@ func businessUserToStorage(user *desc.BusinessUser) storage.BusinessUser {
 		Sex:            personSexToStorage[user.Sex],
 		BirthDate:      user.BirthDate.AsTime(),
 		BusinessName:   user.BusinessName,
+		PhoneNumber:    user.PhoneNumber,
 	}
 }

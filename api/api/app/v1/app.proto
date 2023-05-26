@@ -38,6 +38,7 @@ message BusinessUser {
   PersonSex sex = 4;
   google.protobuf.Timestamp birth_date = 5;
   string business_name = 6;
+  string phone_number = 7;
 }
 
 // Represents all of the information related to an authority user.

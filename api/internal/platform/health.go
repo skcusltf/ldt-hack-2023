@@ -14,7 +14,7 @@ func HealthHandler(pgCheck health.CheckFunc) http.Handler {
 	h, _ := health.New(
 		health.WithComponent(health.Component{
 			Name:    "ldt-api",
-			Version: "v0.1.0",
+			Version: "v0.1.1",
 		}),
 		health.WithChecks(
 			health.Config{

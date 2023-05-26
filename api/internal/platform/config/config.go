@@ -17,6 +17,8 @@ const (
 	HTTPAddr = "http.addr"
 	// Log level to use for initializing the logger
 	LogLevel = "log.level"
+	// Admin username:password pair
+	AdminUserPass = "admin.userpass"
 )
 
 const (

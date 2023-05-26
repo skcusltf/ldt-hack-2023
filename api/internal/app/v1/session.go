@@ -70,6 +70,7 @@ func (s *Service) GetSessionUser(ctx context.Context, _ *emptypb.Empty) (*desc.G
 			BirthDate:      timestamppb.New(user.BirthDate),
 			Sex:            personSexFromStorage[user.Sex],
 			BusinessName:   user.BusinessName,
+			PhoneNumber:    user.PhoneNumber,
 		}
 	}
 	// TODO: support authority account type

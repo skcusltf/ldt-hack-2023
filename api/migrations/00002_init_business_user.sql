@@ -10,7 +10,8 @@ create table business_user (
   last_name text not null,
   sex person_sex not null,
   birth_date date not null,
-  business_name text not null
+  business_name text not null,
+  phone_number text not null
 );
 -- +goose StatementEnd
 
