@@ -6,6 +6,7 @@ image:
 
 secrets:
   postgres_dsn: "postgres-dsn"
+  admin_credentials: "admin-credentials"
 
 service:
   type: NodePort

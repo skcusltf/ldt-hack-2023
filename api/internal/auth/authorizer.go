@@ -67,12 +67,33 @@ func UnaryInterceptor[T any](a *Authorizer, whitelist ...string) grpc.UnaryServe
 		}
 
 		var claims T
-		if ok := a.verifyAndParse(tokenString, &claims); !ok {
+		if ok := a.VerifyAndParse(tokenString, &claims); !ok {
 			return nil, status.Error(codes.Unauthenticated, "Invalid token")
 		}
 
 		return handler(claimsToCtx(ctx, claims), req)
 	}
+}
+
+// VerifyAndParse verifies the given token and parses it into claims,
+//
+//	returning false if an error occurs on any step.
+func (a *Authorizer) VerifyAndParse(token string, claims any) bool {
+	encryptedJWT, err := jwt.ParseSignedAndEncrypted(token)
+	if err != nil {
+		return false
+	}
+
+	decryptedJWT, err := encryptedJWT.Decrypt(a.key)
+	if err != nil {
+		return false
+	}
+
+	if err := decryptedJWT.Claims(&a.key.PublicKey, claims); err != nil {
+		return false
+	}
+
+	return true
 }
 
 // Construct constructs a new JWT containing the specified claims.
@@ -83,23 +104,4 @@ func (a *Authorizer) Construct(claims any) (string, error) {
 	}
 
 	return token, nil
-}
-
-// verifyAndParse verifies the given JWT and reads the token claims into the given value, which should be a pointer.
-func (a *Authorizer) verifyAndParse(jwtString string, dest any) bool {
-	encryptedToken, err := jwt.ParseSignedAndEncrypted(jwtString)
-	if err != nil {
-		return false
-	}
-
-	token, err := encryptedToken.Decrypt(a.key)
-	if err != nil {
-		return false
-	}
-
-	if err := token.Claims(&a.key.PublicKey, dest); err != nil {
-		return false
-	}
-
-	return true
 }

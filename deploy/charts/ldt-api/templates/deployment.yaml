@@ -32,6 +32,11 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.secrets.postgres_dsn }}
                   key: value
+            - name: ADMIN_CREDENTIALS
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.admin_credentials }}
+                  key: value
           volumeMounts:
             - name: session-jwt
               mountPath: "/var/run/secrets"

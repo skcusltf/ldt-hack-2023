@@ -57,6 +57,7 @@ func (s *Service) GetSessionUser(ctx context.Context, _ *emptypb.Empty) (*desc.G
 	}
 
 	var businessUser *desc.BusinessUser
+	var authorityUser *desc.AuthorityUser
 	var err error
 
 	if session.AccountType == storage.AccountTypeBusiness {
@@ -70,9 +71,18 @@ func (s *Service) GetSessionUser(ctx context.Context, _ *emptypb.Empty) (*desc.G
 			BirthDate:      timestamppb.New(user.BirthDate),
 			Sex:            personSexFromStorage[user.Sex],
 			BusinessName:   user.BusinessName,
+			PhoneNumber:    user.PhoneNumber,
+		}
+	} else if session.AccountType == storage.AccountTypeAuthority {
+		var user storage.InspectorUser
+		user, err = s.db.GetInspectorUser(ctx, session.AccountID)
+
+		authorityUser = &desc.AuthorityUser{
+			FirstName:     user.FirstName,
+			LastName:      user.LastName,
+			AuthorityName: user.Authority.Name,
 		}
 	}
-	// TODO: support authority account type
 
 	if err != nil {
 		s.logger.Error("failed to retrieve authorized user info from db", "account_id", session.AccountID, "error", err)
@@ -82,13 +92,15 @@ func (s *Service) GetSessionUser(ctx context.Context, _ *emptypb.Empty) (*desc.G
 	resp := &desc.GetSessionUserResponse{}
 	if businessUser != nil {
 		resp.User = &desc.GetSessionUserResponse_Business{Business: businessUser}
+	} else if authorityUser != nil {
+		resp.User = &desc.GetSessionUserResponse_Authority{Authority: authorityUser}
 	}
 
 	return resp, nil
 }
 
 func (s *Service) constructSession(operation string, accountID int64, accountType storage.AccountType) *desc.SessionToken {
-	token, err := s.authorizer.Construct(Session{AccountID: accountID, AccountType: storage.AccountTypeBusiness})
+	token, err := s.authorizer.Construct(Session{AccountID: accountID, AccountType: accountType})
 	if err != nil {
 		s.logger.Error("failed to construct user token", "operation", operation, "account_id", accountID, "error", err)
 		return nil

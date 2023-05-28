@@ -20,6 +20,7 @@ type BusinessUser struct {
 	Sex            PersonSex `bun:"type:person_sex,notnull"`
 	BirthDate      time.Time `bun:"type:date,notnull"`
 	BusinessName   string    `bun:"type:text,notnull"`
+	PhoneNumber    string    `bun:"type:text,notnull"`
 }
 
 // CreateBusinessUser creates a new business user account and returns the created account's id.

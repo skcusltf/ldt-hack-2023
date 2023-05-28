@@ -1,0 +1,15 @@
+version: "3.1"
+
+rules:
+  - rule: Respond to FAQs
+    steps:
+      - intent: faq
+      - action: utter_faq
+  - rule: Respond with website information
+    steps:
+      - intent: web_faq
+      - action: utter_web_faq
+  - rule: Fallback action asking the user to rephrase their question
+    steps:
+      - intent: nlu_fallback
+      - action: utter_fallback_rephrase

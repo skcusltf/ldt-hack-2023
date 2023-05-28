@@ -23,6 +23,7 @@ func Open(ctx context.Context, dsn string) (*Database, error) {
 	sqldb.SetMaxIdleConns(maxOpenConns)
 
 	bundb := bun.NewDB(sqldb, pgdialect.New(), bun.WithDiscardUnknownColumns())
+	// bundb.AddQueryHook(bundebug.NewQueryHook(bundebug.WithVerbose(true)))
 
 	db := &Database{bundb}
 	if err := db.Ping(ctx); err != nil {
@@ -48,4 +49,9 @@ func (db *Database) Ping(ctx context.Context) error {
 	}
 
 	return nil
+}
+
+// WithTx runs the specified function in a new transaction.
+func (db *Database) WithTx(ctx context.Context, readOnly bool, f func(ctx context.Context, tx bun.Tx) error) error {
+	return db.bun.RunInTx(ctx, &sql.TxOptions{ReadOnly: readOnly}, f)
 }
