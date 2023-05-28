@@ -41,6 +41,9 @@ service AppService {
   // CreateConsultationAppointment is an authenticated endpoint for business users for creating a consultation
   // appointment using the information retrieved via ListConsultationTopics and ListAvailableConsultationSlots.
   rpc CreateConsultationAppointment(CreateConsultationAppointmentRequest) returns (CreateConsultationAppointmentResponse);
+  // ListConsultationAppointments is an authenticated endpoint for business and authority users for listing
+  // created consultation appointments with their participation.
+  rpc ListConsultationAppointments(google.protobuf.Empty) returns (ListConsultationAppointmentsResponse);
 }
 
 // Represents a person's sex. Only displayed for business users.
@@ -178,4 +181,18 @@ message CreateConsultationAppointmentRequest {
 // The consultation appointment creation response, containing additional information to display to the user.
 message CreateConsultationAppointmentResponse {
   AuthorityUser inspector = 1;
+}
+
+// The consultation appointment listing response, containing all of the details about a single consultation appointment.
+message ListConsultationAppointmentsResponse {
+  message AppointmentInfo {
+    string id = 1;
+    string topic = 2;
+    google.protobuf.Timestamp from_time = 3;
+    google.protobuf.Timestamp to_time = 4;
+    BusinessUser business_user = 5;
+    AuthorityUser authority_user = 6;
+  }
+
+  repeated AppointmentInfo appointment_info = 1;
 }

@@ -7,14 +7,14 @@ create table authority (
 
 create table authority_consultation_topic (
   id bigserial primary key,
-  authority_id bigint references authority (id),
+  authority_id bigint not null references authority (id),
   name text not null,
   unique (authority_id, name)
 );
 
 create table authority_consultation_slots (
   id bigserial primary key,
-  authority_id bigint references authority (id),
+  authority_id bigint not null references authority (id),
   from_time timestamptz not null,
   to_time timestamptz not null,
   unique (authority_id, from_time, to_time)

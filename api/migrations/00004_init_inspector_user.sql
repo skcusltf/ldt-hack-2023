@@ -3,7 +3,7 @@
 create table inspector_user (
   id bigserial primary key,
   account_id bigint references account (id), -- nullable to allow account deletion
-  authority_id bigint references authority (id),
+  authority_id bigint not null references authority (id),
   first_name text not null,
   last_name text not null
 );

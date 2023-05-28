@@ -164,3 +164,54 @@ func (s *Service) CreateConsultationAppointment(ctx context.Context, req *desc.C
 		},
 	}, nil
 }
+
+// ListConsultationAppointments implements the appointment listing endpoint for both business and authority users.
+func (s *Service) ListConsultationAppointments(ctx context.Context, _ *emptypb.Empty) (*desc.ListConsultationAppointmentsResponse, error) {
+	session, authorized := s.authorizeSession(ctx)
+	if !authorized {
+		return nil, errUnauthorized
+	}
+
+	var err error
+	var appointments []storage.ConsultationAppointment
+	if session.AccountType == storage.AccountTypeBusiness {
+		appointments, err = s.db.ListBusinessConsultationAppointments(ctx, session.AccountID)
+	} else if session.AccountType == storage.AccountTypeAuthority {
+		appointments, err = s.db.ListInspectorConsultationAppointments(ctx, session.AccountID)
+	}
+
+	if err != nil {
+		s.logger.Error("failed to list user appointments",
+			"account_type", session.AccountType,
+			"account_id", session.AccountID,
+			"error", err,
+		)
+		return nil, errInternal
+	}
+
+	return &desc.ListConsultationAppointmentsResponse{
+		AppointmentInfo: lo.Map(appointments, func(appointment storage.ConsultationAppointment, _ int,
+		) *desc.ListConsultationAppointmentsResponse_AppointmentInfo {
+			return &desc.ListConsultationAppointmentsResponse_AppointmentInfo{
+				Id:       appointment.ID,
+				Topic:    appointment.Topic.Name,
+				FromTime: timestamppb.New(appointment.Slot.FromTime),
+				ToTime:   timestamppb.New(appointment.Slot.ToTime),
+				BusinessUser: &desc.BusinessUser{
+					FirstName:      appointment.BusinessUser.FirstName,
+					PatronymicName: appointment.BusinessUser.PatronymicName,
+					LastName:       appointment.BusinessUser.LastName,
+					Sex:            personSexFromStorage[appointment.BusinessUser.Sex],
+					BirthDate:      timestamppb.New(appointment.BusinessUser.BirthDate),
+					BusinessName:   appointment.BusinessUser.BusinessName,
+					PhoneNumber:    appointment.BusinessUser.PhoneNumber,
+				},
+				AuthorityUser: &desc.AuthorityUser{
+					FirstName:     appointment.InspectorUser.FirstName,
+					LastName:      appointment.InspectorUser.LastName,
+					AuthorityName: appointment.InspectorUser.Authority.Name,
+				},
+			}
+		}),
+	}, nil
+}

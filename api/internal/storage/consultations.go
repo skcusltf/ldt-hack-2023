@@ -32,13 +32,17 @@ type ConsultationSlot struct {
 }
 
 type ConsultationAppointment struct {
-	bun.BaseModel `bun:"table:consultation_appointments,alias:ca"`
+	bun.BaseModel `bun:"table:consultation_appointment,alias:ca"`
 
-	ID              string `bun:",pk,type:uuid,default:uuid_generate_v4()"`
-	TopicID         int64  `bun:"type:bigint"`
-	SlotID          int64  `bun:"type:bigint"`
-	BusinessUserID  int64  `bun:"type:bigint"`
-	InspectorUserID int64  `bun:"type:bigint"`
+	ID              string            `bun:",pk,type:uuid,default:uuid_generate_v4()"`
+	TopicID         int64             `bun:"type:bigint"`
+	Topic           ConsultationTopic `bun:"rel:belongs-to,join:topic_id=id"`
+	SlotID          int64             `bun:"type:bigint"`
+	Slot            ConsultationSlot  `bun:"rel:belongs-to,join:slot_id=id"`
+	BusinessUserID  int64             `bun:"type:bigint"`
+	BusinessUser    BusinessUser      `bun:"rel:belongs-to,join:business_user_id=id"`
+	InspectorUserID int64             `bun:"type:bigint"`
+	InspectorUser   InspectorUser     `bun:"rel:belongs-to,join:inspector_user_id=id"`
 }
 
 // CreateTopicsTx creates topics which don't exist yet and returns all of the topics in the DB.
@@ -71,7 +75,7 @@ func (db *Database) CreateConsultationAppointment(ctx context.Context, topicID, 
 		var availableInspectors []InspectorUser
 		err := tx.NewSelect().Model(&availableInspectors).
 			Join("join authority_consultation_slots acs on acs.authority_id = iu.authority_id").
-			Join("left join consultation_appointments ca on ca.slot_id = acs.id and ca.inspector_user_id = iu.id").
+			Join("left join consultation_appointment ca on ca.slot_id = acs.id and ca.inspector_user_id = iu.id").
 			Where("acs.id = ?", slotID).
 			Where("ca.id is null").
 			Scan(ctx)
@@ -123,7 +127,7 @@ func (db *Database) ListAvailableConsultationDates(ctx context.Context, authorit
 	err := db.bun.NewSelect().Model((*ConsultationSlot)(nil)).
 		Column("acs.from_time").
 		Join("join inspector_user iu on iu.authority_id = acs.authority_id").
-		Join("left join consultation_appointments ca on ca.slot_id = acs.id and ca.inspector_user_id = iu.id").
+		Join("left join consultation_appointment ca on ca.slot_id = acs.id and ca.inspector_user_id = iu.id").
 		Where("acs.authority_id = ?", authorityID).
 		Where("acs.from_time::date >= ?::date", from_date).
 		Where("acs.to_time::date <= ?::date", to_date).
@@ -144,7 +148,7 @@ func (db *Database) ListAvailableConsultationSlots(ctx context.Context, authorit
 	// Like the query in ListAvailableConsultationDates but filters based on specific date instead of range
 	err := db.bun.NewSelect().Model(&slots).
 		Join("join inspector_user iu on iu.authority_id = acs.authority_id").
-		Join("left join consultation_appointments ca on ca.slot_id = acs.id and ca.inspector_user_id = iu.id").
+		Join("left join consultation_appointment ca on ca.slot_id = acs.id and ca.inspector_user_id = iu.id").
 		Where("acs.authority_id = ?", authorityID).
 		Where("acs.from_time::date = ?::date", date).
 		Where("ca.id is null").
@@ -154,4 +158,60 @@ func (db *Database) ListAvailableConsultationSlots(ctx context.Context, authorit
 	}
 
 	return slots, nil
+}
+
+// ListBusinessConsultationAppointments lists consultation appointments for a business user.
+// This includes only the appointments which the user have created themselves.
+func (db *Database) ListBusinessConsultationAppointments(ctx context.Context, accountID int64,
+) ([]ConsultationAppointment, error) {
+	var appointments []ConsultationAppointment
+
+	selectBusinessUserID := db.bun.NewSelect().Model((*BusinessUser)(nil)).
+		Column("id").
+		Where("account_id = ?", accountID)
+
+	err := db.bun.NewSelect().Model(&appointments).
+		Column("ca.id").
+		ColumnExpr("authority.name as inspector_user__authority__name").
+		Relation("Topic").
+		Relation("Slot").
+		Relation("BusinessUser").
+		Relation("InspectorUser").
+		Join("left join authority on inspector_user.authority_id = authority.id").
+		Where("ca.business_user_id = (?)", selectBusinessUserID).
+		Order("slot.from_time").
+		Scan(ctx)
+	if err != nil {
+		return nil, wrapError("ListBusinessConsultationAppointments", err)
+	}
+
+	return appointments, nil
+}
+
+// ListInspectorConsultationAppointments lists consultation appointments for an authority inspector.
+// This includes the appointments which have been created by the business users.
+func (db *Database) ListInspectorConsultationAppointments(ctx context.Context, accountID int64,
+) ([]ConsultationAppointment, error) {
+	var appointments []ConsultationAppointment
+
+	selectInspectorUserID := db.bun.NewSelect().Model((*InspectorUser)(nil)).
+		Column("id").
+		Where("account_id = ?", accountID)
+
+	err := db.bun.NewSelect().Model(&appointments).
+		Column("ca.id").
+		ColumnExpr("authority.name as inspector_user__authority__name").
+		Relation("Topic").
+		Relation("Slot").
+		Relation("BusinessUser").
+		Relation("InspectorUser").
+		Join("left join authority on inspector_user.authority_id = authority.id").
+		Where("ca.inspector_user_id = (?)", selectInspectorUserID).
+		Order("slot.from_time").
+		Scan(ctx)
+	if err != nil {
+		return nil, wrapError("ListInspectorConsultationAppointments", err)
+	}
+
+	return appointments, nil
 }
