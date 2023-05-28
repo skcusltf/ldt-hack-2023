@@ -23,12 +23,15 @@ service AppService {
   // GetSessionUser is an authenticated endpoint which returns the information about the currently authenticated user. 
   rpc GetSessionUser(google.protobuf.Empty) returns (GetSessionUserResponse);
 
-  // SendChatBotMessage is an endpoint for business users for sending message to
+  // SendChatBotMessage is an authenticated endpoint for business users for sending message to
   // and receiving answers from the chatbot. 
   rpc SendChatBotMessage(SendChatBotMessageRequest) returns (SendChatBotMessageResponse);
-
   // RateChatBot is an endpoint for business users to like or dislike a bot's response.
   rpc RateChatBot(RateChatBotRequest) returns (google.protobuf.Empty);
+
+  // ListConsultationTopics is an authenticated endpoint for business users for listing
+  // possible choices during consultation registration. 
+  rpc ListConsultationTopics(google.protobuf.Empty) returns (ListConsultationTopicsResponse);
 }
 
 // Represents a person's sex. Only displayed for business users.
@@ -108,4 +111,20 @@ message RateChatBotRequest {
   string request_message = 1;
   repeated string response_messages = 2;
   bool rating = 3;
+}
+
+// The consultation topic listing response.
+message ListConsultationTopicsResponse {
+  message AuthorityTopic {
+    int64 topic_id = 1;
+    string topic_name = 2;
+  }
+
+  message AuthorityTopics {
+    int64 authority_id = 1;
+    string authority_name = 2;
+    repeated AuthorityTopic topics = 3;
+  }
+
+  repeated AuthorityTopics authority_topics = 1;
 }
