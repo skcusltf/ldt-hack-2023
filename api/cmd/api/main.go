@@ -18,6 +18,7 @@ import (
 	"ldt-hack/api/internal/admin"
 	"ldt-hack/api/internal/app/v1"
 	"ldt-hack/api/internal/auth"
+	"ldt-hack/api/internal/bot"
 	"ldt-hack/api/internal/platform"
 	"ldt-hack/api/internal/platform/config"
 	"ldt-hack/api/internal/storage"
@@ -74,8 +75,14 @@ func runAPI(ctx context.Context, logger *slog.Logger) error {
 		return fmt.Errorf("creating authorizer: %w", err)
 	}
 
+	// Initialize rasa bot
+	botClient, err := bot.NewClient(viper.GetString(config.RasaURL))
+	if err != nil {
+		return fmt.Errorf("creating rasa bot: %w", err)
+	}
+
 	// Initialize gRPC services
-	appService := app.NewService(logger, db, authorizer)
+	appService := app.NewService(logger, db, botClient, authorizer)
 
 	// Initialize actual gRPC server
 	grpcAddr := viper.GetString(config.GRPCAddr)

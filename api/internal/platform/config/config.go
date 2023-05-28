@@ -19,6 +19,8 @@ const (
 	LogLevel = "log.level"
 	// Admin username:password_hash pair
 	AdminCredentials = "admin.credentials"
+	// Base URL to rasa API
+	RasaURL = "rasa.url"
 )
 
 const (

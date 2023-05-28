@@ -2,6 +2,7 @@ package app
 
 import (
 	"ldt-hack/api/internal/auth"
+	"ldt-hack/api/internal/bot"
 	desc "ldt-hack/api/internal/pb/app/v1"
 	"ldt-hack/api/internal/storage"
 
@@ -23,11 +24,12 @@ type Service struct {
 
 	logger     *slog.Logger
 	db         *storage.Database
+	bc         *bot.Client
 	authorizer *auth.Authorizer
 }
 
-func NewService(logger *slog.Logger, db *storage.Database, authorizer *auth.Authorizer) *Service {
-	return &Service{logger: logger.With("component", "app"), db: db, authorizer: authorizer}
+func NewService(logger *slog.Logger, db *storage.Database, bc *bot.Client, authorizer *auth.Authorizer) *Service {
+	return &Service{logger: logger.With("component", "app"), db: db, bc: bc, authorizer: authorizer}
 }
 
 // RegisterServer registers this service with the gRPC server.

@@ -2,3 +2,7 @@ image:
   repository: swr.ru-moscow-1.hc.sbercloud.ru/skcusltf-lct-23-track-2/ldt-api
 
 imagePullSecrets: true
+
+rasa:
+  url: "http://10.247.228.102:5005"
+
