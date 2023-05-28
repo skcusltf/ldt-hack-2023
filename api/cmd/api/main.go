@@ -15,6 +15,7 @@ import (
 	"syscall"
 	"time"
 
+	"ldt-hack/api/internal/admin"
 	"ldt-hack/api/internal/app/v1"
 	"ldt-hack/api/internal/auth"
 	"ldt-hack/api/internal/platform"
@@ -83,9 +84,16 @@ func runAPI(ctx context.Context, logger *slog.Logger) error {
 		return fmt.Errorf("starting gRPC server: %w", err)
 	}
 
+	// Initialize admin HTTP service
+	adminService, err := admin.NewService(logger, db, authorizer, viper.GetString(config.AdminCredentials))
+	if err != nil {
+		return fmt.Errorf("creating admin service: %w", err)
+	}
+
 	// Initialize HTTP server
 	httpAddr := viper.GetString(config.HTTPAddr)
 	httpServer, httpCh := startHTTP(httpAddr,
+		adminService,
 		platform.HealthHandler(db.Ping),
 	)
 
@@ -203,11 +211,12 @@ func startGRPC(addr string,
 	return server, ch, nil
 }
 
-func startHTTP(addr string, health http.Handler) (*http.Server, chan error) {
+func startHTTP(addr string, adminService *admin.Service, health http.Handler) (*http.Server, chan error) {
 	gin.SetMode(gin.ReleaseMode)
 	engine := gin.New()
 
 	engine.GET("/health", gin.WrapH(health))
+	adminService.RegisterRoutes(engine.Group("/admin"))
 
 	server := &http.Server{
 		Addr:              addr,

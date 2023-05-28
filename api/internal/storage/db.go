@@ -49,3 +49,8 @@ func (db *Database) Ping(ctx context.Context) error {
 
 	return nil
 }
+
+// WithTx runs the specified function in a new transaction.
+func (db *Database) WithTx(ctx context.Context, readOnly bool, f func(ctx context.Context, tx bun.Tx) error) error {
+	return db.bun.RunInTx(ctx, &sql.TxOptions{ReadOnly: readOnly}, f)
+}
