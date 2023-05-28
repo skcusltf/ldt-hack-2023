@@ -37,6 +37,11 @@ type AppServiceClient interface {
 	CreateSession(ctx context.Context, in *CreateSessionRequest, opts ...grpc.CallOption) (*SessionToken, error)
 	// GetSessionUser is an authenticated endpoint which returns the information about the currently authenticated user.
 	GetSessionUser(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*GetSessionUserResponse, error)
+	// SendChatBotMessage is an endpoint for business users for sending message to
+	// and receiving answers from the chatbot.
+	SendChatBotMessage(ctx context.Context, in *SendChatBotMessageRequest, opts ...grpc.CallOption) (*SendChatBotMessageResponse, error)
+	// RateChatBot is an endpoint for business users to like or dislike a bot's response.
+	RateChatBot(ctx context.Context, in *RateChatBotRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
 
 type appServiceClient struct {
@@ -92,6 +97,24 @@ func (c *appServiceClient) GetSessionUser(ctx context.Context, in *emptypb.Empty
 	return out, nil
 }
 
+func (c *appServiceClient) SendChatBotMessage(ctx context.Context, in *SendChatBotMessageRequest, opts ...grpc.CallOption) (*SendChatBotMessageResponse, error) {
+	out := new(SendChatBotMessageResponse)
+	err := c.cc.Invoke(ctx, "/ldt_hack.app.v1.AppService/SendChatBotMessage", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *appServiceClient) RateChatBot(ctx context.Context, in *RateChatBotRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, "/ldt_hack.app.v1.AppService/RateChatBot", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AppServiceServer is the server API for AppService service.
 // All implementations must embed UnimplementedAppServiceServer
 // for forward compatibility
@@ -110,6 +133,11 @@ type AppServiceServer interface {
 	CreateSession(context.Context, *CreateSessionRequest) (*SessionToken, error)
 	// GetSessionUser is an authenticated endpoint which returns the information about the currently authenticated user.
 	GetSessionUser(context.Context, *emptypb.Empty) (*GetSessionUserResponse, error)
+	// SendChatBotMessage is an endpoint for business users for sending message to
+	// and receiving answers from the chatbot.
+	SendChatBotMessage(context.Context, *SendChatBotMessageRequest) (*SendChatBotMessageResponse, error)
+	// RateChatBot is an endpoint for business users to like or dislike a bot's response.
+	RateChatBot(context.Context, *RateChatBotRequest) (*emptypb.Empty, error)
 	mustEmbedUnimplementedAppServiceServer()
 }
 
@@ -131,6 +159,12 @@ func (UnimplementedAppServiceServer) CreateSession(context.Context, *CreateSessi
 }
 func (UnimplementedAppServiceServer) GetSessionUser(context.Context, *emptypb.Empty) (*GetSessionUserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetSessionUser not implemented")
+}
+func (UnimplementedAppServiceServer) SendChatBotMessage(context.Context, *SendChatBotMessageRequest) (*SendChatBotMessageResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SendChatBotMessage not implemented")
+}
+func (UnimplementedAppServiceServer) RateChatBot(context.Context, *RateChatBotRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RateChatBot not implemented")
 }
 func (UnimplementedAppServiceServer) mustEmbedUnimplementedAppServiceServer() {}
 
@@ -235,6 +269,42 @@ func _AppService_GetSessionUser_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AppService_SendChatBotMessage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SendChatBotMessageRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AppServiceServer).SendChatBotMessage(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/ldt_hack.app.v1.AppService/SendChatBotMessage",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AppServiceServer).SendChatBotMessage(ctx, req.(*SendChatBotMessageRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AppService_RateChatBot_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RateChatBotRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AppServiceServer).RateChatBot(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/ldt_hack.app.v1.AppService/RateChatBot",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AppServiceServer).RateChatBot(ctx, req.(*RateChatBotRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AppService_ServiceDesc is the grpc.ServiceDesc for AppService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -261,6 +331,14 @@ var AppService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetSessionUser",
 			Handler:    _AppService_GetSessionUser_Handler,
+		},
+		{
+			MethodName: "SendChatBotMessage",
+			Handler:    _AppService_SendChatBotMessage_Handler,
+		},
+		{
+			MethodName: "RateChatBot",
+			Handler:    _AppService_RateChatBot_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

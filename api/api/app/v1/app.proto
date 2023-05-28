@@ -22,6 +22,13 @@ service AppService {
   rpc CreateSession(CreateSessionRequest) returns (SessionToken);
   // GetSessionUser is an authenticated endpoint which returns the information about the currently authenticated user. 
   rpc GetSessionUser(google.protobuf.Empty) returns (GetSessionUserResponse);
+
+  // SendChatBotMessage is an endpoint for business users for sending message to
+  // and receiving answers from the chatbot. 
+  rpc SendChatBotMessage(SendChatBotMessageRequest) returns (SendChatBotMessageResponse);
+
+  // RateChatBot is an endpoint for business users to like or dislike a bot's response.
+  rpc RateChatBot(RateChatBotRequest) returns (google.protobuf.Empty);
 }
 
 // Represents a person's sex. Only displayed for business users.
@@ -84,4 +91,21 @@ message GetSessionUserResponse {
     BusinessUser business = 1;
     AuthorityUser authority = 2;
   };
+}
+
+// The chat bot message request containing a single message to the bot.
+message SendChatBotMessageRequest {
+  string message = 1;
+}
+
+// The chat bot response containing multiple messages from the bot.
+message SendChatBotMessageResponse {
+  repeated string messages = 1;
+}
+
+// The chat bot rating request for a previous request+response group.
+message RateChatBotRequest {
+  string request_message = 1;
+  repeated string response_messages = 2;
+  bool rating = 3;
 }
