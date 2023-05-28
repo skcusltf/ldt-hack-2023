@@ -790,6 +790,328 @@ func (x *ListConsultationTopicsResponse) GetAuthorityTopics() []*ListConsultatio
 	return nil
 }
 
+// The available consultation date listing request.
+type ListAvailableConsultationDatesRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	AuthorityId int64                  `protobuf:"varint,1,opt,name=authority_id,json=authorityId,proto3" json:"authority_id,omitempty"`
+	FromDate    *timestamppb.Timestamp `protobuf:"bytes,2,opt,name=from_date,json=fromDate,proto3" json:"from_date,omitempty"`
+	ToDate      *timestamppb.Timestamp `protobuf:"bytes,3,opt,name=to_date,json=toDate,proto3" json:"to_date,omitempty"`
+}
+
+func (x *ListAvailableConsultationDatesRequest) Reset() {
+	*x = ListAvailableConsultationDatesRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_api_app_v1_app_proto_msgTypes[11]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ListAvailableConsultationDatesRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListAvailableConsultationDatesRequest) ProtoMessage() {}
+
+func (x *ListAvailableConsultationDatesRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_app_v1_app_proto_msgTypes[11]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListAvailableConsultationDatesRequest.ProtoReflect.Descriptor instead.
+func (*ListAvailableConsultationDatesRequest) Descriptor() ([]byte, []int) {
+	return file_api_app_v1_app_proto_rawDescGZIP(), []int{11}
+}
+
+func (x *ListAvailableConsultationDatesRequest) GetAuthorityId() int64 {
+	if x != nil {
+		return x.AuthorityId
+	}
+	return 0
+}
+
+func (x *ListAvailableConsultationDatesRequest) GetFromDate() *timestamppb.Timestamp {
+	if x != nil {
+		return x.FromDate
+	}
+	return nil
+}
+
+func (x *ListAvailableConsultationDatesRequest) GetToDate() *timestamppb.Timestamp {
+	if x != nil {
+		return x.ToDate
+	}
+	return nil
+}
+
+// The available consultation date listing response.
+type ListAvailableConsultationDatesResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	AvailableDates []*timestamppb.Timestamp `protobuf:"bytes,2,rep,name=available_dates,json=availableDates,proto3" json:"available_dates,omitempty"`
+}
+
+func (x *ListAvailableConsultationDatesResponse) Reset() {
+	*x = ListAvailableConsultationDatesResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_api_app_v1_app_proto_msgTypes[12]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ListAvailableConsultationDatesResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListAvailableConsultationDatesResponse) ProtoMessage() {}
+
+func (x *ListAvailableConsultationDatesResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_api_app_v1_app_proto_msgTypes[12]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListAvailableConsultationDatesResponse.ProtoReflect.Descriptor instead.
+func (*ListAvailableConsultationDatesResponse) Descriptor() ([]byte, []int) {
+	return file_api_app_v1_app_proto_rawDescGZIP(), []int{12}
+}
+
+func (x *ListAvailableConsultationDatesResponse) GetAvailableDates() []*timestamppb.Timestamp {
+	if x != nil {
+		return x.AvailableDates
+	}
+	return nil
+}
+
+// The consultation slot listing request.
+type ListAvailableConsultationSlotsRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	AuthorityId int64                  `protobuf:"varint,1,opt,name=authority_id,json=authorityId,proto3" json:"authority_id,omitempty"`
+	Date        *timestamppb.Timestamp `protobuf:"bytes,2,opt,name=date,proto3" json:"date,omitempty"`
+}
+
+func (x *ListAvailableConsultationSlotsRequest) Reset() {
+	*x = ListAvailableConsultationSlotsRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_api_app_v1_app_proto_msgTypes[13]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ListAvailableConsultationSlotsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListAvailableConsultationSlotsRequest) ProtoMessage() {}
+
+func (x *ListAvailableConsultationSlotsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_app_v1_app_proto_msgTypes[13]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListAvailableConsultationSlotsRequest.ProtoReflect.Descriptor instead.
+func (*ListAvailableConsultationSlotsRequest) Descriptor() ([]byte, []int) {
+	return file_api_app_v1_app_proto_rawDescGZIP(), []int{13}
+}
+
+func (x *ListAvailableConsultationSlotsRequest) GetAuthorityId() int64 {
+	if x != nil {
+		return x.AuthorityId
+	}
+	return 0
+}
+
+func (x *ListAvailableConsultationSlotsRequest) GetDate() *timestamppb.Timestamp {
+	if x != nil {
+		return x.Date
+	}
+	return nil
+}
+
+// The consultation slot listing response.
+// from_time and to_time are guaranteed to have the same date as the one that was specified in the request.
+type ListAvailableConsultationSlotsResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	ConsultationSlots []*ListAvailableConsultationSlotsResponse_ConsultationSlot `protobuf:"bytes,1,rep,name=consultation_slots,json=consultationSlots,proto3" json:"consultation_slots,omitempty"`
+}
+
+func (x *ListAvailableConsultationSlotsResponse) Reset() {
+	*x = ListAvailableConsultationSlotsResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_api_app_v1_app_proto_msgTypes[14]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ListAvailableConsultationSlotsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListAvailableConsultationSlotsResponse) ProtoMessage() {}
+
+func (x *ListAvailableConsultationSlotsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_api_app_v1_app_proto_msgTypes[14]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListAvailableConsultationSlotsResponse.ProtoReflect.Descriptor instead.
+func (*ListAvailableConsultationSlotsResponse) Descriptor() ([]byte, []int) {
+	return file_api_app_v1_app_proto_rawDescGZIP(), []int{14}
+}
+
+func (x *ListAvailableConsultationSlotsResponse) GetConsultationSlots() []*ListAvailableConsultationSlotsResponse_ConsultationSlot {
+	if x != nil {
+		return x.ConsultationSlots
+	}
+	return nil
+}
+
+// The consultation appointment creation request. The fields should be filled in using the
+// information recevied via prior requests (ListConsultationTopics, ListAvailableConsultationSlots).
+type CreateConsultationAppointmentRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	TopicId int64 `protobuf:"varint,1,opt,name=topic_id,json=topicId,proto3" json:"topic_id,omitempty"`
+	SlotId  int64 `protobuf:"varint,2,opt,name=slot_id,json=slotId,proto3" json:"slot_id,omitempty"`
+}
+
+func (x *CreateConsultationAppointmentRequest) Reset() {
+	*x = CreateConsultationAppointmentRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_api_app_v1_app_proto_msgTypes[15]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *CreateConsultationAppointmentRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateConsultationAppointmentRequest) ProtoMessage() {}
+
+func (x *CreateConsultationAppointmentRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_app_v1_app_proto_msgTypes[15]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateConsultationAppointmentRequest.ProtoReflect.Descriptor instead.
+func (*CreateConsultationAppointmentRequest) Descriptor() ([]byte, []int) {
+	return file_api_app_v1_app_proto_rawDescGZIP(), []int{15}
+}
+
+func (x *CreateConsultationAppointmentRequest) GetTopicId() int64 {
+	if x != nil {
+		return x.TopicId
+	}
+	return 0
+}
+
+func (x *CreateConsultationAppointmentRequest) GetSlotId() int64 {
+	if x != nil {
+		return x.SlotId
+	}
+	return 0
+}
+
+// The consultation appointment creation response, containing additional information to display to the user.
+type CreateConsultationAppointmentResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Inspector *AuthorityUser `protobuf:"bytes,1,opt,name=inspector,proto3" json:"inspector,omitempty"`
+}
+
+func (x *CreateConsultationAppointmentResponse) Reset() {
+	*x = CreateConsultationAppointmentResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_api_app_v1_app_proto_msgTypes[16]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *CreateConsultationAppointmentResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateConsultationAppointmentResponse) ProtoMessage() {}
+
+func (x *CreateConsultationAppointmentResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_api_app_v1_app_proto_msgTypes[16]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateConsultationAppointmentResponse.ProtoReflect.Descriptor instead.
+func (*CreateConsultationAppointmentResponse) Descriptor() ([]byte, []int) {
+	return file_api_app_v1_app_proto_rawDescGZIP(), []int{16}
+}
+
+func (x *CreateConsultationAppointmentResponse) GetInspector() *AuthorityUser {
+	if x != nil {
+		return x.Inspector
+	}
+	return nil
+}
+
 type ListConsultationTopicsResponse_AuthorityTopic struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -802,7 +1124,7 @@ type ListConsultationTopicsResponse_AuthorityTopic struct {
 func (x *ListConsultationTopicsResponse_AuthorityTopic) Reset() {
 	*x = ListConsultationTopicsResponse_AuthorityTopic{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_app_v1_app_proto_msgTypes[11]
+		mi := &file_api_app_v1_app_proto_msgTypes[17]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -815,7 +1137,7 @@ func (x *ListConsultationTopicsResponse_AuthorityTopic) String() string {
 func (*ListConsultationTopicsResponse_AuthorityTopic) ProtoMessage() {}
 
 func (x *ListConsultationTopicsResponse_AuthorityTopic) ProtoReflect() protoreflect.Message {
-	mi := &file_api_app_v1_app_proto_msgTypes[11]
+	mi := &file_api_app_v1_app_proto_msgTypes[17]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -858,7 +1180,7 @@ type ListConsultationTopicsResponse_AuthorityTopics struct {
 func (x *ListConsultationTopicsResponse_AuthorityTopics) Reset() {
 	*x = ListConsultationTopicsResponse_AuthorityTopics{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_app_v1_app_proto_msgTypes[12]
+		mi := &file_api_app_v1_app_proto_msgTypes[18]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -871,7 +1193,7 @@ func (x *ListConsultationTopicsResponse_AuthorityTopics) String() string {
 func (*ListConsultationTopicsResponse_AuthorityTopics) ProtoMessage() {}
 
 func (x *ListConsultationTopicsResponse_AuthorityTopics) ProtoReflect() protoreflect.Message {
-	mi := &file_api_app_v1_app_proto_msgTypes[12]
+	mi := &file_api_app_v1_app_proto_msgTypes[18]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -904,6 +1226,69 @@ func (x *ListConsultationTopicsResponse_AuthorityTopics) GetAuthorityName() stri
 func (x *ListConsultationTopicsResponse_AuthorityTopics) GetTopics() []*ListConsultationTopicsResponse_AuthorityTopic {
 	if x != nil {
 		return x.Topics
+	}
+	return nil
+}
+
+type ListAvailableConsultationSlotsResponse_ConsultationSlot struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Id       int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	FromTime *timestamppb.Timestamp `protobuf:"bytes,2,opt,name=from_time,json=fromTime,proto3" json:"from_time,omitempty"`
+	ToTime   *timestamppb.Timestamp `protobuf:"bytes,3,opt,name=to_time,json=toTime,proto3" json:"to_time,omitempty"`
+}
+
+func (x *ListAvailableConsultationSlotsResponse_ConsultationSlot) Reset() {
+	*x = ListAvailableConsultationSlotsResponse_ConsultationSlot{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_api_app_v1_app_proto_msgTypes[19]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ListAvailableConsultationSlotsResponse_ConsultationSlot) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListAvailableConsultationSlotsResponse_ConsultationSlot) ProtoMessage() {}
+
+func (x *ListAvailableConsultationSlotsResponse_ConsultationSlot) ProtoReflect() protoreflect.Message {
+	mi := &file_api_app_v1_app_proto_msgTypes[19]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListAvailableConsultationSlotsResponse_ConsultationSlot.ProtoReflect.Descriptor instead.
+func (*ListAvailableConsultationSlotsResponse_ConsultationSlot) Descriptor() ([]byte, []int) {
+	return file_api_app_v1_app_proto_rawDescGZIP(), []int{14, 0}
+}
+
+func (x *ListAvailableConsultationSlotsResponse_ConsultationSlot) GetId() int64 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
+func (x *ListAvailableConsultationSlotsResponse_ConsultationSlot) GetFromTime() *timestamppb.Timestamp {
+	if x != nil {
+		return x.FromTime
+	}
+	return nil
+}
+
+func (x *ListAvailableConsultationSlotsResponse_ConsultationSlot) GetToTime() *timestamppb.Timestamp {
+	if x != nil {
+		return x.ToTime
 	}
 	return nil
 }
@@ -1023,11 +1408,69 @@ var file_api_app_v1_app_proto_rawDesc = []byte{
 	0x31, 0x2e, 0x4c, 0x69, 0x73, 0x74, 0x43, 0x6f, 0x6e, 0x73, 0x75, 0x6c, 0x74, 0x61, 0x74, 0x69,
 	0x6f, 0x6e, 0x54, 0x6f, 0x70, 0x69, 0x63, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
 	0x2e, 0x41, 0x75, 0x74, 0x68, 0x6f, 0x72, 0x69, 0x74, 0x79, 0x54, 0x6f, 0x70, 0x69, 0x63, 0x52,
-	0x06, 0x74, 0x6f, 0x70, 0x69, 0x63, 0x73, 0x2a, 0x37, 0x0a, 0x09, 0x50, 0x65, 0x72, 0x73, 0x6f,
+	0x06, 0x74, 0x6f, 0x70, 0x69, 0x63, 0x73, 0x22, 0xb8, 0x01, 0x0a, 0x25, 0x4c, 0x69, 0x73, 0x74,
+	0x41, 0x76, 0x61, 0x69, 0x6c, 0x61, 0x62, 0x6c, 0x65, 0x43, 0x6f, 0x6e, 0x73, 0x75, 0x6c, 0x74,
+	0x61, 0x74, 0x69, 0x6f, 0x6e, 0x44, 0x61, 0x74, 0x65, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
+	0x74, 0x12, 0x21, 0x0a, 0x0c, 0x61, 0x75, 0x74, 0x68, 0x6f, 0x72, 0x69, 0x74, 0x79, 0x5f, 0x69,
+	0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x03, 0x52, 0x0b, 0x61, 0x75, 0x74, 0x68, 0x6f, 0x72, 0x69,
+	0x74, 0x79, 0x49, 0x64, 0x12, 0x37, 0x0a, 0x09, 0x66, 0x72, 0x6f, 0x6d, 0x5f, 0x64, 0x61, 0x74,
+	0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1a, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65,
+	0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x54, 0x69, 0x6d, 0x65, 0x73, 0x74,
+	0x61, 0x6d, 0x70, 0x52, 0x08, 0x66, 0x72, 0x6f, 0x6d, 0x44, 0x61, 0x74, 0x65, 0x12, 0x33, 0x0a,
+	0x07, 0x74, 0x6f, 0x5f, 0x64, 0x61, 0x74, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1a,
+	0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66,
+	0x2e, 0x54, 0x69, 0x6d, 0x65, 0x73, 0x74, 0x61, 0x6d, 0x70, 0x52, 0x06, 0x74, 0x6f, 0x44, 0x61,
+	0x74, 0x65, 0x22, 0x6d, 0x0a, 0x26, 0x4c, 0x69, 0x73, 0x74, 0x41, 0x76, 0x61, 0x69, 0x6c, 0x61,
+	0x62, 0x6c, 0x65, 0x43, 0x6f, 0x6e, 0x73, 0x75, 0x6c, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x44,
+	0x61, 0x74, 0x65, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x43, 0x0a, 0x0f,
+	0x61, 0x76, 0x61, 0x69, 0x6c, 0x61, 0x62, 0x6c, 0x65, 0x5f, 0x64, 0x61, 0x74, 0x65, 0x73, 0x18,
+	0x02, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x1a, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70,
+	0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x54, 0x69, 0x6d, 0x65, 0x73, 0x74, 0x61, 0x6d,
+	0x70, 0x52, 0x0e, 0x61, 0x76, 0x61, 0x69, 0x6c, 0x61, 0x62, 0x6c, 0x65, 0x44, 0x61, 0x74, 0x65,
+	0x73, 0x22, 0x7a, 0x0a, 0x25, 0x4c, 0x69, 0x73, 0x74, 0x41, 0x76, 0x61, 0x69, 0x6c, 0x61, 0x62,
+	0x6c, 0x65, 0x43, 0x6f, 0x6e, 0x73, 0x75, 0x6c, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x53, 0x6c,
+	0x6f, 0x74, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x21, 0x0a, 0x0c, 0x61, 0x75,
+	0x74, 0x68, 0x6f, 0x72, 0x69, 0x74, 0x79, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x03,
+	0x52, 0x0b, 0x61, 0x75, 0x74, 0x68, 0x6f, 0x72, 0x69, 0x74, 0x79, 0x49, 0x64, 0x12, 0x2e, 0x0a,
+	0x04, 0x64, 0x61, 0x74, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1a, 0x2e, 0x67, 0x6f,
+	0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x54, 0x69,
+	0x6d, 0x65, 0x73, 0x74, 0x61, 0x6d, 0x70, 0x52, 0x04, 0x64, 0x61, 0x74, 0x65, 0x22, 0xb4, 0x02,
+	0x0a, 0x26, 0x4c, 0x69, 0x73, 0x74, 0x41, 0x76, 0x61, 0x69, 0x6c, 0x61, 0x62, 0x6c, 0x65, 0x43,
+	0x6f, 0x6e, 0x73, 0x75, 0x6c, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x53, 0x6c, 0x6f, 0x74, 0x73,
+	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x77, 0x0a, 0x12, 0x63, 0x6f, 0x6e, 0x73,
+	0x75, 0x6c, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x73, 0x6c, 0x6f, 0x74, 0x73, 0x18, 0x01,
+	0x20, 0x03, 0x28, 0x0b, 0x32, 0x48, 0x2e, 0x6c, 0x64, 0x74, 0x5f, 0x68, 0x61, 0x63, 0x6b, 0x2e,
+	0x61, 0x70, 0x70, 0x2e, 0x76, 0x31, 0x2e, 0x4c, 0x69, 0x73, 0x74, 0x41, 0x76, 0x61, 0x69, 0x6c,
+	0x61, 0x62, 0x6c, 0x65, 0x43, 0x6f, 0x6e, 0x73, 0x75, 0x6c, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e,
+	0x53, 0x6c, 0x6f, 0x74, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x2e, 0x43, 0x6f,
+	0x6e, 0x73, 0x75, 0x6c, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x53, 0x6c, 0x6f, 0x74, 0x52, 0x11,
+	0x63, 0x6f, 0x6e, 0x73, 0x75, 0x6c, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x53, 0x6c, 0x6f, 0x74,
+	0x73, 0x1a, 0x90, 0x01, 0x0a, 0x10, 0x43, 0x6f, 0x6e, 0x73, 0x75, 0x6c, 0x74, 0x61, 0x74, 0x69,
+	0x6f, 0x6e, 0x53, 0x6c, 0x6f, 0x74, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x03, 0x52, 0x02, 0x69, 0x64, 0x12, 0x37, 0x0a, 0x09, 0x66, 0x72, 0x6f, 0x6d, 0x5f, 0x74,
+	0x69, 0x6d, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1a, 0x2e, 0x67, 0x6f, 0x6f, 0x67,
+	0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x54, 0x69, 0x6d, 0x65,
+	0x73, 0x74, 0x61, 0x6d, 0x70, 0x52, 0x08, 0x66, 0x72, 0x6f, 0x6d, 0x54, 0x69, 0x6d, 0x65, 0x12,
+	0x33, 0x0a, 0x07, 0x74, 0x6f, 0x5f, 0x74, 0x69, 0x6d, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0b,
+	0x32, 0x1a, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62,
+	0x75, 0x66, 0x2e, 0x54, 0x69, 0x6d, 0x65, 0x73, 0x74, 0x61, 0x6d, 0x70, 0x52, 0x06, 0x74, 0x6f,
+	0x54, 0x69, 0x6d, 0x65, 0x22, 0x5a, 0x0a, 0x24, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x43, 0x6f,
+	0x6e, 0x73, 0x75, 0x6c, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x41, 0x70, 0x70, 0x6f, 0x69, 0x6e,
+	0x74, 0x6d, 0x65, 0x6e, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x19, 0x0a, 0x08,
+	0x74, 0x6f, 0x70, 0x69, 0x63, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x03, 0x52, 0x07,
+	0x74, 0x6f, 0x70, 0x69, 0x63, 0x49, 0x64, 0x12, 0x17, 0x0a, 0x07, 0x73, 0x6c, 0x6f, 0x74, 0x5f,
+	0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x03, 0x52, 0x06, 0x73, 0x6c, 0x6f, 0x74, 0x49, 0x64,
+	0x22, 0x65, 0x0a, 0x25, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x43, 0x6f, 0x6e, 0x73, 0x75, 0x6c,
+	0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x41, 0x70, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x6d, 0x65, 0x6e,
+	0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x3c, 0x0a, 0x09, 0x69, 0x6e, 0x73,
+	0x70, 0x65, 0x63, 0x74, 0x6f, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1e, 0x2e, 0x6c,
+	0x64, 0x74, 0x5f, 0x68, 0x61, 0x63, 0x6b, 0x2e, 0x61, 0x70, 0x70, 0x2e, 0x76, 0x31, 0x2e, 0x41,
+	0x75, 0x74, 0x68, 0x6f, 0x72, 0x69, 0x74, 0x79, 0x55, 0x73, 0x65, 0x72, 0x52, 0x09, 0x69, 0x6e,
+	0x73, 0x70, 0x65, 0x63, 0x74, 0x6f, 0x72, 0x2a, 0x37, 0x0a, 0x09, 0x50, 0x65, 0x72, 0x73, 0x6f,
 	0x6e, 0x53, 0x65, 0x78, 0x12, 0x13, 0x0a, 0x0f, 0x50, 0x45, 0x52, 0x53, 0x4f, 0x4e, 0x5f, 0x53,
 	0x45, 0x58, 0x5f, 0x4d, 0x41, 0x4c, 0x45, 0x10, 0x00, 0x12, 0x15, 0x0a, 0x11, 0x50, 0x45, 0x52,
 	0x53, 0x4f, 0x4e, 0x5f, 0x53, 0x45, 0x58, 0x5f, 0x46, 0x45, 0x4d, 0x41, 0x4c, 0x45, 0x10, 0x01,
-	0x32, 0xd5, 0x05, 0x0a, 0x0a, 0x41, 0x70, 0x70, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x12,
+	0x32, 0x8e, 0x09, 0x0a, 0x0a, 0x41, 0x70, 0x70, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x12,
 	0x5f, 0x0a, 0x12, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x42, 0x75, 0x73, 0x69, 0x6e, 0x65, 0x73,
 	0x73, 0x55, 0x73, 0x65, 0x72, 0x12, 0x2a, 0x2e, 0x6c, 0x64, 0x74, 0x5f, 0x68, 0x61, 0x63, 0x6b,
 	0x2e, 0x61, 0x70, 0x70, 0x2e, 0x76, 0x31, 0x2e, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x42, 0x75,
@@ -1072,9 +1515,36 @@ var file_api_app_v1_app_proto_rawDesc = []byte{
 	0x66, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x1a, 0x2f, 0x2e, 0x6c, 0x64, 0x74, 0x5f, 0x68, 0x61,
 	0x63, 0x6b, 0x2e, 0x61, 0x70, 0x70, 0x2e, 0x76, 0x31, 0x2e, 0x4c, 0x69, 0x73, 0x74, 0x43, 0x6f,
 	0x6e, 0x73, 0x75, 0x6c, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x54, 0x6f, 0x70, 0x69, 0x63, 0x73,
-	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x42, 0x15, 0x5a, 0x13, 0x6c, 0x64, 0x74, 0x2d,
-	0x68, 0x61, 0x63, 0x6b, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x61, 0x70, 0x70, 0x2f, 0x76, 0x31, 0x62,
-	0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x91, 0x01, 0x0a, 0x1e, 0x4c, 0x69, 0x73,
+	0x74, 0x41, 0x76, 0x61, 0x69, 0x6c, 0x61, 0x62, 0x6c, 0x65, 0x43, 0x6f, 0x6e, 0x73, 0x75, 0x6c,
+	0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x44, 0x61, 0x74, 0x65, 0x73, 0x12, 0x36, 0x2e, 0x6c, 0x64,
+	0x74, 0x5f, 0x68, 0x61, 0x63, 0x6b, 0x2e, 0x61, 0x70, 0x70, 0x2e, 0x76, 0x31, 0x2e, 0x4c, 0x69,
+	0x73, 0x74, 0x41, 0x76, 0x61, 0x69, 0x6c, 0x61, 0x62, 0x6c, 0x65, 0x43, 0x6f, 0x6e, 0x73, 0x75,
+	0x6c, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x44, 0x61, 0x74, 0x65, 0x73, 0x52, 0x65, 0x71, 0x75,
+	0x65, 0x73, 0x74, 0x1a, 0x37, 0x2e, 0x6c, 0x64, 0x74, 0x5f, 0x68, 0x61, 0x63, 0x6b, 0x2e, 0x61,
+	0x70, 0x70, 0x2e, 0x76, 0x31, 0x2e, 0x4c, 0x69, 0x73, 0x74, 0x41, 0x76, 0x61, 0x69, 0x6c, 0x61,
+	0x62, 0x6c, 0x65, 0x43, 0x6f, 0x6e, 0x73, 0x75, 0x6c, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x44,
+	0x61, 0x74, 0x65, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x91, 0x01, 0x0a,
+	0x1e, 0x4c, 0x69, 0x73, 0x74, 0x41, 0x76, 0x61, 0x69, 0x6c, 0x61, 0x62, 0x6c, 0x65, 0x43, 0x6f,
+	0x6e, 0x73, 0x75, 0x6c, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x53, 0x6c, 0x6f, 0x74, 0x73, 0x12,
+	0x36, 0x2e, 0x6c, 0x64, 0x74, 0x5f, 0x68, 0x61, 0x63, 0x6b, 0x2e, 0x61, 0x70, 0x70, 0x2e, 0x76,
+	0x31, 0x2e, 0x4c, 0x69, 0x73, 0x74, 0x41, 0x76, 0x61, 0x69, 0x6c, 0x61, 0x62, 0x6c, 0x65, 0x43,
+	0x6f, 0x6e, 0x73, 0x75, 0x6c, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x53, 0x6c, 0x6f, 0x74, 0x73,
+	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x37, 0x2e, 0x6c, 0x64, 0x74, 0x5f, 0x68, 0x61,
+	0x63, 0x6b, 0x2e, 0x61, 0x70, 0x70, 0x2e, 0x76, 0x31, 0x2e, 0x4c, 0x69, 0x73, 0x74, 0x41, 0x76,
+	0x61, 0x69, 0x6c, 0x61, 0x62, 0x6c, 0x65, 0x43, 0x6f, 0x6e, 0x73, 0x75, 0x6c, 0x74, 0x61, 0x74,
+	0x69, 0x6f, 0x6e, 0x53, 0x6c, 0x6f, 0x74, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
+	0x12, 0x8e, 0x01, 0x0a, 0x1d, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x43, 0x6f, 0x6e, 0x73, 0x75,
+	0x6c, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x41, 0x70, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x6d, 0x65,
+	0x6e, 0x74, 0x12, 0x35, 0x2e, 0x6c, 0x64, 0x74, 0x5f, 0x68, 0x61, 0x63, 0x6b, 0x2e, 0x61, 0x70,
+	0x70, 0x2e, 0x76, 0x31, 0x2e, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x43, 0x6f, 0x6e, 0x73, 0x75,
+	0x6c, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x41, 0x70, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x6d, 0x65,
+	0x6e, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x36, 0x2e, 0x6c, 0x64, 0x74, 0x5f,
+	0x68, 0x61, 0x63, 0x6b, 0x2e, 0x61, 0x70, 0x70, 0x2e, 0x76, 0x31, 0x2e, 0x43, 0x72, 0x65, 0x61,
+	0x74, 0x65, 0x43, 0x6f, 0x6e, 0x73, 0x75, 0x6c, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x41, 0x70,
+	0x70, 0x6f, 0x69, 0x6e, 0x74, 0x6d, 0x65, 0x6e, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
+	0x65, 0x42, 0x15, 0x5a, 0x13, 0x6c, 0x64, 0x74, 0x2d, 0x68, 0x61, 0x63, 0x6b, 0x2f, 0x61, 0x70,
+	0x69, 0x2f, 0x61, 0x70, 0x70, 0x2f, 0x76, 0x31, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -1090,57 +1560,78 @@ func file_api_app_v1_app_proto_rawDescGZIP() []byte {
 }
 
 var file_api_app_v1_app_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
-var file_api_app_v1_app_proto_msgTypes = make([]protoimpl.MessageInfo, 13)
+var file_api_app_v1_app_proto_msgTypes = make([]protoimpl.MessageInfo, 20)
 var file_api_app_v1_app_proto_goTypes = []interface{}{
-	(PersonSex)(0),                                         // 0: ldt_hack.app.v1.PersonSex
-	(CreateSessionRequest_SessionUser)(0),                  // 1: ldt_hack.app.v1.CreateSessionRequest.SessionUser
-	(*BusinessUser)(nil),                                   // 2: ldt_hack.app.v1.BusinessUser
-	(*AuthorityUser)(nil),                                  // 3: ldt_hack.app.v1.AuthorityUser
-	(*SessionToken)(nil),                                   // 4: ldt_hack.app.v1.SessionToken
-	(*CreateBusinessUserRequest)(nil),                      // 5: ldt_hack.app.v1.CreateBusinessUserRequest
-	(*UpdateBusinessUserRequest)(nil),                      // 6: ldt_hack.app.v1.UpdateBusinessUserRequest
-	(*CreateSessionRequest)(nil),                           // 7: ldt_hack.app.v1.CreateSessionRequest
-	(*GetSessionUserResponse)(nil),                         // 8: ldt_hack.app.v1.GetSessionUserResponse
-	(*SendChatBotMessageRequest)(nil),                      // 9: ldt_hack.app.v1.SendChatBotMessageRequest
-	(*SendChatBotMessageResponse)(nil),                     // 10: ldt_hack.app.v1.SendChatBotMessageResponse
-	(*RateChatBotRequest)(nil),                             // 11: ldt_hack.app.v1.RateChatBotRequest
-	(*ListConsultationTopicsResponse)(nil),                 // 12: ldt_hack.app.v1.ListConsultationTopicsResponse
-	(*ListConsultationTopicsResponse_AuthorityTopic)(nil),  // 13: ldt_hack.app.v1.ListConsultationTopicsResponse.AuthorityTopic
-	(*ListConsultationTopicsResponse_AuthorityTopics)(nil), // 14: ldt_hack.app.v1.ListConsultationTopicsResponse.AuthorityTopics
-	(*timestamppb.Timestamp)(nil),                          // 15: google.protobuf.Timestamp
-	(*emptypb.Empty)(nil),                                  // 16: google.protobuf.Empty
+	(PersonSex)(0),                                                  // 0: ldt_hack.app.v1.PersonSex
+	(CreateSessionRequest_SessionUser)(0),                           // 1: ldt_hack.app.v1.CreateSessionRequest.SessionUser
+	(*BusinessUser)(nil),                                            // 2: ldt_hack.app.v1.BusinessUser
+	(*AuthorityUser)(nil),                                           // 3: ldt_hack.app.v1.AuthorityUser
+	(*SessionToken)(nil),                                            // 4: ldt_hack.app.v1.SessionToken
+	(*CreateBusinessUserRequest)(nil),                               // 5: ldt_hack.app.v1.CreateBusinessUserRequest
+	(*UpdateBusinessUserRequest)(nil),                               // 6: ldt_hack.app.v1.UpdateBusinessUserRequest
+	(*CreateSessionRequest)(nil),                                    // 7: ldt_hack.app.v1.CreateSessionRequest
+	(*GetSessionUserResponse)(nil),                                  // 8: ldt_hack.app.v1.GetSessionUserResponse
+	(*SendChatBotMessageRequest)(nil),                               // 9: ldt_hack.app.v1.SendChatBotMessageRequest
+	(*SendChatBotMessageResponse)(nil),                              // 10: ldt_hack.app.v1.SendChatBotMessageResponse
+	(*RateChatBotRequest)(nil),                                      // 11: ldt_hack.app.v1.RateChatBotRequest
+	(*ListConsultationTopicsResponse)(nil),                          // 12: ldt_hack.app.v1.ListConsultationTopicsResponse
+	(*ListAvailableConsultationDatesRequest)(nil),                   // 13: ldt_hack.app.v1.ListAvailableConsultationDatesRequest
+	(*ListAvailableConsultationDatesResponse)(nil),                  // 14: ldt_hack.app.v1.ListAvailableConsultationDatesResponse
+	(*ListAvailableConsultationSlotsRequest)(nil),                   // 15: ldt_hack.app.v1.ListAvailableConsultationSlotsRequest
+	(*ListAvailableConsultationSlotsResponse)(nil),                  // 16: ldt_hack.app.v1.ListAvailableConsultationSlotsResponse
+	(*CreateConsultationAppointmentRequest)(nil),                    // 17: ldt_hack.app.v1.CreateConsultationAppointmentRequest
+	(*CreateConsultationAppointmentResponse)(nil),                   // 18: ldt_hack.app.v1.CreateConsultationAppointmentResponse
+	(*ListConsultationTopicsResponse_AuthorityTopic)(nil),           // 19: ldt_hack.app.v1.ListConsultationTopicsResponse.AuthorityTopic
+	(*ListConsultationTopicsResponse_AuthorityTopics)(nil),          // 20: ldt_hack.app.v1.ListConsultationTopicsResponse.AuthorityTopics
+	(*ListAvailableConsultationSlotsResponse_ConsultationSlot)(nil), // 21: ldt_hack.app.v1.ListAvailableConsultationSlotsResponse.ConsultationSlot
+	(*timestamppb.Timestamp)(nil),                                   // 22: google.protobuf.Timestamp
+	(*emptypb.Empty)(nil),                                           // 23: google.protobuf.Empty
 }
 var file_api_app_v1_app_proto_depIdxs = []int32{
 	0,  // 0: ldt_hack.app.v1.BusinessUser.sex:type_name -> ldt_hack.app.v1.PersonSex
-	15, // 1: ldt_hack.app.v1.BusinessUser.birth_date:type_name -> google.protobuf.Timestamp
+	22, // 1: ldt_hack.app.v1.BusinessUser.birth_date:type_name -> google.protobuf.Timestamp
 	2,  // 2: ldt_hack.app.v1.CreateBusinessUserRequest.user:type_name -> ldt_hack.app.v1.BusinessUser
 	2,  // 3: ldt_hack.app.v1.UpdateBusinessUserRequest.user:type_name -> ldt_hack.app.v1.BusinessUser
 	1,  // 4: ldt_hack.app.v1.CreateSessionRequest.session_user:type_name -> ldt_hack.app.v1.CreateSessionRequest.SessionUser
 	2,  // 5: ldt_hack.app.v1.GetSessionUserResponse.business:type_name -> ldt_hack.app.v1.BusinessUser
 	3,  // 6: ldt_hack.app.v1.GetSessionUserResponse.authority:type_name -> ldt_hack.app.v1.AuthorityUser
-	14, // 7: ldt_hack.app.v1.ListConsultationTopicsResponse.authority_topics:type_name -> ldt_hack.app.v1.ListConsultationTopicsResponse.AuthorityTopics
-	13, // 8: ldt_hack.app.v1.ListConsultationTopicsResponse.AuthorityTopics.topics:type_name -> ldt_hack.app.v1.ListConsultationTopicsResponse.AuthorityTopic
-	5,  // 9: ldt_hack.app.v1.AppService.CreateBusinessUser:input_type -> ldt_hack.app.v1.CreateBusinessUserRequest
-	6,  // 10: ldt_hack.app.v1.AppService.UpdateBusinessUser:input_type -> ldt_hack.app.v1.UpdateBusinessUserRequest
-	16, // 11: ldt_hack.app.v1.AppService.DeleteBusinessUser:input_type -> google.protobuf.Empty
-	7,  // 12: ldt_hack.app.v1.AppService.CreateSession:input_type -> ldt_hack.app.v1.CreateSessionRequest
-	16, // 13: ldt_hack.app.v1.AppService.GetSessionUser:input_type -> google.protobuf.Empty
-	9,  // 14: ldt_hack.app.v1.AppService.SendChatBotMessage:input_type -> ldt_hack.app.v1.SendChatBotMessageRequest
-	11, // 15: ldt_hack.app.v1.AppService.RateChatBot:input_type -> ldt_hack.app.v1.RateChatBotRequest
-	16, // 16: ldt_hack.app.v1.AppService.ListConsultationTopics:input_type -> google.protobuf.Empty
-	4,  // 17: ldt_hack.app.v1.AppService.CreateBusinessUser:output_type -> ldt_hack.app.v1.SessionToken
-	16, // 18: ldt_hack.app.v1.AppService.UpdateBusinessUser:output_type -> google.protobuf.Empty
-	16, // 19: ldt_hack.app.v1.AppService.DeleteBusinessUser:output_type -> google.protobuf.Empty
-	4,  // 20: ldt_hack.app.v1.AppService.CreateSession:output_type -> ldt_hack.app.v1.SessionToken
-	8,  // 21: ldt_hack.app.v1.AppService.GetSessionUser:output_type -> ldt_hack.app.v1.GetSessionUserResponse
-	10, // 22: ldt_hack.app.v1.AppService.SendChatBotMessage:output_type -> ldt_hack.app.v1.SendChatBotMessageResponse
-	16, // 23: ldt_hack.app.v1.AppService.RateChatBot:output_type -> google.protobuf.Empty
-	12, // 24: ldt_hack.app.v1.AppService.ListConsultationTopics:output_type -> ldt_hack.app.v1.ListConsultationTopicsResponse
-	17, // [17:25] is the sub-list for method output_type
-	9,  // [9:17] is the sub-list for method input_type
-	9,  // [9:9] is the sub-list for extension type_name
-	9,  // [9:9] is the sub-list for extension extendee
-	0,  // [0:9] is the sub-list for field type_name
+	20, // 7: ldt_hack.app.v1.ListConsultationTopicsResponse.authority_topics:type_name -> ldt_hack.app.v1.ListConsultationTopicsResponse.AuthorityTopics
+	22, // 8: ldt_hack.app.v1.ListAvailableConsultationDatesRequest.from_date:type_name -> google.protobuf.Timestamp
+	22, // 9: ldt_hack.app.v1.ListAvailableConsultationDatesRequest.to_date:type_name -> google.protobuf.Timestamp
+	22, // 10: ldt_hack.app.v1.ListAvailableConsultationDatesResponse.available_dates:type_name -> google.protobuf.Timestamp
+	22, // 11: ldt_hack.app.v1.ListAvailableConsultationSlotsRequest.date:type_name -> google.protobuf.Timestamp
+	21, // 12: ldt_hack.app.v1.ListAvailableConsultationSlotsResponse.consultation_slots:type_name -> ldt_hack.app.v1.ListAvailableConsultationSlotsResponse.ConsultationSlot
+	3,  // 13: ldt_hack.app.v1.CreateConsultationAppointmentResponse.inspector:type_name -> ldt_hack.app.v1.AuthorityUser
+	19, // 14: ldt_hack.app.v1.ListConsultationTopicsResponse.AuthorityTopics.topics:type_name -> ldt_hack.app.v1.ListConsultationTopicsResponse.AuthorityTopic
+	22, // 15: ldt_hack.app.v1.ListAvailableConsultationSlotsResponse.ConsultationSlot.from_time:type_name -> google.protobuf.Timestamp
+	22, // 16: ldt_hack.app.v1.ListAvailableConsultationSlotsResponse.ConsultationSlot.to_time:type_name -> google.protobuf.Timestamp
+	5,  // 17: ldt_hack.app.v1.AppService.CreateBusinessUser:input_type -> ldt_hack.app.v1.CreateBusinessUserRequest
+	6,  // 18: ldt_hack.app.v1.AppService.UpdateBusinessUser:input_type -> ldt_hack.app.v1.UpdateBusinessUserRequest
+	23, // 19: ldt_hack.app.v1.AppService.DeleteBusinessUser:input_type -> google.protobuf.Empty
+	7,  // 20: ldt_hack.app.v1.AppService.CreateSession:input_type -> ldt_hack.app.v1.CreateSessionRequest
+	23, // 21: ldt_hack.app.v1.AppService.GetSessionUser:input_type -> google.protobuf.Empty
+	9,  // 22: ldt_hack.app.v1.AppService.SendChatBotMessage:input_type -> ldt_hack.app.v1.SendChatBotMessageRequest
+	11, // 23: ldt_hack.app.v1.AppService.RateChatBot:input_type -> ldt_hack.app.v1.RateChatBotRequest
+	23, // 24: ldt_hack.app.v1.AppService.ListConsultationTopics:input_type -> google.protobuf.Empty
+	13, // 25: ldt_hack.app.v1.AppService.ListAvailableConsultationDates:input_type -> ldt_hack.app.v1.ListAvailableConsultationDatesRequest
+	15, // 26: ldt_hack.app.v1.AppService.ListAvailableConsultationSlots:input_type -> ldt_hack.app.v1.ListAvailableConsultationSlotsRequest
+	17, // 27: ldt_hack.app.v1.AppService.CreateConsultationAppointment:input_type -> ldt_hack.app.v1.CreateConsultationAppointmentRequest
+	4,  // 28: ldt_hack.app.v1.AppService.CreateBusinessUser:output_type -> ldt_hack.app.v1.SessionToken
+	23, // 29: ldt_hack.app.v1.AppService.UpdateBusinessUser:output_type -> google.protobuf.Empty
+	23, // 30: ldt_hack.app.v1.AppService.DeleteBusinessUser:output_type -> google.protobuf.Empty
+	4,  // 31: ldt_hack.app.v1.AppService.CreateSession:output_type -> ldt_hack.app.v1.SessionToken
+	8,  // 32: ldt_hack.app.v1.AppService.GetSessionUser:output_type -> ldt_hack.app.v1.GetSessionUserResponse
+	10, // 33: ldt_hack.app.v1.AppService.SendChatBotMessage:output_type -> ldt_hack.app.v1.SendChatBotMessageResponse
+	23, // 34: ldt_hack.app.v1.AppService.RateChatBot:output_type -> google.protobuf.Empty
+	12, // 35: ldt_hack.app.v1.AppService.ListConsultationTopics:output_type -> ldt_hack.app.v1.ListConsultationTopicsResponse
+	14, // 36: ldt_hack.app.v1.AppService.ListAvailableConsultationDates:output_type -> ldt_hack.app.v1.ListAvailableConsultationDatesResponse
+	16, // 37: ldt_hack.app.v1.AppService.ListAvailableConsultationSlots:output_type -> ldt_hack.app.v1.ListAvailableConsultationSlotsResponse
+	18, // 38: ldt_hack.app.v1.AppService.CreateConsultationAppointment:output_type -> ldt_hack.app.v1.CreateConsultationAppointmentResponse
+	28, // [28:39] is the sub-list for method output_type
+	17, // [17:28] is the sub-list for method input_type
+	17, // [17:17] is the sub-list for extension type_name
+	17, // [17:17] is the sub-list for extension extendee
+	0,  // [0:17] is the sub-list for field type_name
 }
 
 func init() { file_api_app_v1_app_proto_init() }
@@ -1282,7 +1773,7 @@ func file_api_app_v1_app_proto_init() {
 			}
 		}
 		file_api_app_v1_app_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ListConsultationTopicsResponse_AuthorityTopic); i {
+			switch v := v.(*ListAvailableConsultationDatesRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1294,7 +1785,91 @@ func file_api_app_v1_app_proto_init() {
 			}
 		}
 		file_api_app_v1_app_proto_msgTypes[12].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ListAvailableConsultationDatesResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_api_app_v1_app_proto_msgTypes[13].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ListAvailableConsultationSlotsRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_api_app_v1_app_proto_msgTypes[14].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ListAvailableConsultationSlotsResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_api_app_v1_app_proto_msgTypes[15].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CreateConsultationAppointmentRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_api_app_v1_app_proto_msgTypes[16].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CreateConsultationAppointmentResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_api_app_v1_app_proto_msgTypes[17].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ListConsultationTopicsResponse_AuthorityTopic); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_api_app_v1_app_proto_msgTypes[18].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*ListConsultationTopicsResponse_AuthorityTopics); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_api_app_v1_app_proto_msgTypes[19].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ListAvailableConsultationSlotsResponse_ConsultationSlot); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1316,7 +1891,7 @@ func file_api_app_v1_app_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_api_app_v1_app_proto_rawDesc,
 			NumEnums:      2,
-			NumMessages:   13,
+			NumMessages:   20,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

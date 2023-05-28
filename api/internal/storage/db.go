@@ -23,6 +23,7 @@ func Open(ctx context.Context, dsn string) (*Database, error) {
 	sqldb.SetMaxIdleConns(maxOpenConns)
 
 	bundb := bun.NewDB(sqldb, pgdialect.New(), bun.WithDiscardUnknownColumns())
+	// bundb.AddQueryHook(bundebug.NewQueryHook(bundebug.WithVerbose(true)))
 
 	db := &Database{bundb}
 	if err := db.Ping(ctx); err != nil {

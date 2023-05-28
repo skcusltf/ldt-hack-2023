@@ -45,6 +45,15 @@ type AppServiceClient interface {
 	// ListConsultationTopics is an authenticated endpoint for business users for listing
 	// possible choices during consultation registration.
 	ListConsultationTopics(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*ListConsultationTopicsResponse, error)
+	// ListAvailableConsultationDates is an authenticated endpoint for business users for listing
+	// available consultation dates for a specific authority in a given time range.
+	ListAvailableConsultationDates(ctx context.Context, in *ListAvailableConsultationDatesRequest, opts ...grpc.CallOption) (*ListAvailableConsultationDatesResponse, error)
+	// ListAvailableConsultationSlots is an authenticated endpoint for business users for listing
+	// available consultation slots for a specific date during consultation
+	ListAvailableConsultationSlots(ctx context.Context, in *ListAvailableConsultationSlotsRequest, opts ...grpc.CallOption) (*ListAvailableConsultationSlotsResponse, error)
+	// CreateConsultationAppointment is an authenticated endpoint for business users for creating a consultation
+	// appointment using the information retrieved via ListConsultationTopics and ListAvailableConsultationSlots.
+	CreateConsultationAppointment(ctx context.Context, in *CreateConsultationAppointmentRequest, opts ...grpc.CallOption) (*CreateConsultationAppointmentResponse, error)
 }
 
 type appServiceClient struct {
@@ -127,6 +136,33 @@ func (c *appServiceClient) ListConsultationTopics(ctx context.Context, in *empty
 	return out, nil
 }
 
+func (c *appServiceClient) ListAvailableConsultationDates(ctx context.Context, in *ListAvailableConsultationDatesRequest, opts ...grpc.CallOption) (*ListAvailableConsultationDatesResponse, error) {
+	out := new(ListAvailableConsultationDatesResponse)
+	err := c.cc.Invoke(ctx, "/ldt_hack.app.v1.AppService/ListAvailableConsultationDates", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *appServiceClient) ListAvailableConsultationSlots(ctx context.Context, in *ListAvailableConsultationSlotsRequest, opts ...grpc.CallOption) (*ListAvailableConsultationSlotsResponse, error) {
+	out := new(ListAvailableConsultationSlotsResponse)
+	err := c.cc.Invoke(ctx, "/ldt_hack.app.v1.AppService/ListAvailableConsultationSlots", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *appServiceClient) CreateConsultationAppointment(ctx context.Context, in *CreateConsultationAppointmentRequest, opts ...grpc.CallOption) (*CreateConsultationAppointmentResponse, error) {
+	out := new(CreateConsultationAppointmentResponse)
+	err := c.cc.Invoke(ctx, "/ldt_hack.app.v1.AppService/CreateConsultationAppointment", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AppServiceServer is the server API for AppService service.
 // All implementations must embed UnimplementedAppServiceServer
 // for forward compatibility
@@ -153,6 +189,15 @@ type AppServiceServer interface {
 	// ListConsultationTopics is an authenticated endpoint for business users for listing
 	// possible choices during consultation registration.
 	ListConsultationTopics(context.Context, *emptypb.Empty) (*ListConsultationTopicsResponse, error)
+	// ListAvailableConsultationDates is an authenticated endpoint for business users for listing
+	// available consultation dates for a specific authority in a given time range.
+	ListAvailableConsultationDates(context.Context, *ListAvailableConsultationDatesRequest) (*ListAvailableConsultationDatesResponse, error)
+	// ListAvailableConsultationSlots is an authenticated endpoint for business users for listing
+	// available consultation slots for a specific date during consultation
+	ListAvailableConsultationSlots(context.Context, *ListAvailableConsultationSlotsRequest) (*ListAvailableConsultationSlotsResponse, error)
+	// CreateConsultationAppointment is an authenticated endpoint for business users for creating a consultation
+	// appointment using the information retrieved via ListConsultationTopics and ListAvailableConsultationSlots.
+	CreateConsultationAppointment(context.Context, *CreateConsultationAppointmentRequest) (*CreateConsultationAppointmentResponse, error)
 	mustEmbedUnimplementedAppServiceServer()
 }
 
@@ -183,6 +228,15 @@ func (UnimplementedAppServiceServer) RateChatBot(context.Context, *RateChatBotRe
 }
 func (UnimplementedAppServiceServer) ListConsultationTopics(context.Context, *emptypb.Empty) (*ListConsultationTopicsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListConsultationTopics not implemented")
+}
+func (UnimplementedAppServiceServer) ListAvailableConsultationDates(context.Context, *ListAvailableConsultationDatesRequest) (*ListAvailableConsultationDatesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListAvailableConsultationDates not implemented")
+}
+func (UnimplementedAppServiceServer) ListAvailableConsultationSlots(context.Context, *ListAvailableConsultationSlotsRequest) (*ListAvailableConsultationSlotsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListAvailableConsultationSlots not implemented")
+}
+func (UnimplementedAppServiceServer) CreateConsultationAppointment(context.Context, *CreateConsultationAppointmentRequest) (*CreateConsultationAppointmentResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateConsultationAppointment not implemented")
 }
 func (UnimplementedAppServiceServer) mustEmbedUnimplementedAppServiceServer() {}
 
@@ -341,6 +395,60 @@ func _AppService_ListConsultationTopics_Handler(srv interface{}, ctx context.Con
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AppService_ListAvailableConsultationDates_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListAvailableConsultationDatesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AppServiceServer).ListAvailableConsultationDates(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/ldt_hack.app.v1.AppService/ListAvailableConsultationDates",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AppServiceServer).ListAvailableConsultationDates(ctx, req.(*ListAvailableConsultationDatesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AppService_ListAvailableConsultationSlots_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListAvailableConsultationSlotsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AppServiceServer).ListAvailableConsultationSlots(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/ldt_hack.app.v1.AppService/ListAvailableConsultationSlots",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AppServiceServer).ListAvailableConsultationSlots(ctx, req.(*ListAvailableConsultationSlotsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AppService_CreateConsultationAppointment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateConsultationAppointmentRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AppServiceServer).CreateConsultationAppointment(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/ldt_hack.app.v1.AppService/CreateConsultationAppointment",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AppServiceServer).CreateConsultationAppointment(ctx, req.(*CreateConsultationAppointmentRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AppService_ServiceDesc is the grpc.ServiceDesc for AppService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -379,6 +487,18 @@ var AppService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ListConsultationTopics",
 			Handler:    _AppService_ListConsultationTopics_Handler,
+		},
+		{
+			MethodName: "ListAvailableConsultationDates",
+			Handler:    _AppService_ListAvailableConsultationDates_Handler,
+		},
+		{
+			MethodName: "ListAvailableConsultationSlots",
+			Handler:    _AppService_ListAvailableConsultationSlots_Handler,
+		},
+		{
+			MethodName: "CreateConsultationAppointment",
+			Handler:    _AppService_CreateConsultationAppointment_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
