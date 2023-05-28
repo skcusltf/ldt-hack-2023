@@ -4,6 +4,9 @@ image:
   repository: ldt-api
   pullPolicy: IfNotPresent
 
+rasa:
+  url: "http://host:5005"
+
 secrets:
   postgres_dsn: "postgres-dsn"
   admin_credentials: "admin-credentials"

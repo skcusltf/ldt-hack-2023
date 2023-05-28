@@ -1,0 +1,27 @@
+applicationSettings:
+  initialModel: "http://renbou.ru/20230528-210844-friendly-opacity.tar.gz"
+  telemetry:
+    enabled: false
+  credentials:
+    additionalChannelCredentials:
+      rest:
+
+image:
+  repository: "swr.ru-moscow-1.hc.sbercloud.ru/skcusltf-lct-23-track-2/rasa"
+  tag: "3.5.10-spacy-ru"
+
+global:
+  postgresql:
+    postgresqlUsername: "rasa"
+    postgresqlPassword: ""
+    postgresqlDatabase: "rasa"
+    servicePort: 5432
+
+postgresql:
+  install: false
+  external:
+    enabled: true
+    host: "10.0.0.251"
+
+nginx:
+  enabled: false

@@ -37,6 +37,8 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.secrets.admin_credentials }}
                   key: value
+            - name: RASA_URL
+              value: {{ .Values.rasa.url }}
           volumeMounts:
             - name: session-jwt
               mountPath: "/var/run/secrets"
