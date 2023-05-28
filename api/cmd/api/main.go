@@ -211,9 +211,13 @@ func startGRPC(addr string,
 	return server, ch, nil
 }
 
-func startHTTP(addr string, adminService *admin.Service, health http.Handler) (*http.Server, chan error) {
+func startHTTP(addr string,
+	adminService *admin.Service,
+	health http.Handler,
+) (*http.Server, chan error) {
 	gin.SetMode(gin.ReleaseMode)
 	engine := gin.New()
+	engine.Use(gin.Recovery())
 
 	engine.GET("/health", gin.WrapH(health))
 	adminService.RegisterRoutes(engine.Group("/admin"))

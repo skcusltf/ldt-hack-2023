@@ -37,6 +37,32 @@ func NewService(logger *slog.Logger, db *storage.Database, authorizer *auth.Auth
 }
 
 func (s *Service) RegisterRoutes(group *gin.RouterGroup) {
-	group.POST("/login", s.loginHandler)
-	group.POST("/authority/info", s.authorityInfoHandler)
+	group.Use(func(c *gin.Context) {
+		c.Next()
+
+		s.logger.Info("handling http request",
+			"method", c.Request.Method,
+			"path", c.FullPath(),
+			"status_code", c.Writer.Status(),
+		)
+	})
+
+	{
+		group.POST("/login", s.loginHandler)
+	}
+
+	// Authorized endpoints
+	authorized := group.Group("/")
+	authorized.Use(func(c *gin.Context) {
+		if !s.authorizeSession(c) {
+			return
+		}
+
+		c.Next()
+	})
+	{
+		authorized.GET("/authority", s.listAuthoritiesHandler)
+		authorized.POST("/authority/info", s.authorityInfoHandler)
+		authorized.POST("/authority/:id/inspector", s.createInspectorHandler)
+	}
 }

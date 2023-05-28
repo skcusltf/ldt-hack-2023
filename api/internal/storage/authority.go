@@ -32,6 +32,17 @@ type ConsultationSlot struct {
 	ToTime      time.Time `bun:"type:timestamptz,notnull"`
 }
 
+// ListAuthorities returns a list of the current authorities.
+func (db *Database) ListAuthorities(ctx context.Context) ([]Authority, error) {
+	var authorities []Authority
+
+	if err := db.bun.NewSelect().Model(&authorities).Scan(ctx); err != nil {
+		return nil, wrapError("ListAuthorities", err)
+	}
+
+	return authorities, nil
+}
+
 // CreateAuthoritiesTx creates authorities which don't exist yet and returns all of the authorities in the DB.
 func (db *Database) CreateAuthoritiesTx(ctx context.Context, tx bun.Tx, names []string) ([]Authority, error) {
 	authorities := lo.Map(names, func(s string, _ int) Authority {
