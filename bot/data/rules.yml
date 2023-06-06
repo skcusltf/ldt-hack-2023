@@ -12,4 +12,12 @@ rules:
   - rule: Fallback action asking the user to rephrase their question
     steps:
       - intent: nlu_fallback
-      - action: utter_fallback_rephrase
+      - action: utter_default
+  - rule: Handle out of scope questions gracefully
+    steps:
+      - intent: out_of_scope
+      - action: utter_default
+  - rule: Hint regarding consultations when the bot is angry
+    steps:
+      - intent: anger
+      - action: utter_anger

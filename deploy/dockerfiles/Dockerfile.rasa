@@ -1,0 +1,5 @@
+FROM rasa/rasa:3.5.10-spacy-en
+
+USER root
+RUN python -m spacy download ru_core_news_md
+USER 1001
