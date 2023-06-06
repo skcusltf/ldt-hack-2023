@@ -41,6 +41,9 @@ service AppService {
   // CreateConsultationAppointment is an authenticated endpoint for business users for creating a consultation
   // appointment using the information retrieved via ListConsultationTopics and ListAvailableConsultationSlots.
   rpc CreateConsultationAppointment(CreateConsultationAppointmentRequest) returns (CreateConsultationAppointmentResponse);
+  // CancelConsultationAppointment is an authenticated endpoint for business users for canceling a consultation
+  // appointment using the ID retrieved via ListConsultationAppointments.
+  rpc CancelConsultationAppointment(CancelConsultationAppointmentRequest) returns (google.protobuf.Empty);
   // ListConsultationAppointments is an authenticated endpoint for business and authority users for listing
   // created consultation appointments with their participation.
   rpc ListConsultationAppointments(google.protobuf.Empty) returns (ListConsultationAppointmentsResponse);
@@ -116,13 +119,19 @@ message SendChatBotMessageRequest {
 // The chat bot response containing multiple messages from the bot.
 message SendChatBotMessageResponse {
   repeated string messages = 1;
+  int64 id = 2;
 }
 
 // The chat bot rating request for a previous request+response group.
 message RateChatBotRequest {
-  string request_message = 1;
-  repeated string response_messages = 2;
-  bool rating = 3;
+  enum Rating {
+    RATING_REMOVED = 0;
+    RATING_NEGATIVE = 1;
+    RATING_POSITIVE = 2;
+  }
+
+  int64 id = 1;
+  Rating rating = 2;
 }
 
 // The consultation topic listing response.
@@ -183,6 +192,11 @@ message CreateConsultationAppointmentResponse {
   AuthorityUser inspector = 1;
 }
 
+// The consultation cancelation request.
+message CancelConsultationAppointmentRequest {
+  string id = 1;
+}
+
 // The consultation appointment listing response, containing all of the details about a single consultation appointment.
 message ListConsultationAppointmentsResponse {
   message AppointmentInfo {
@@ -192,6 +206,7 @@ message ListConsultationAppointmentsResponse {
     google.protobuf.Timestamp to_time = 4;
     BusinessUser business_user = 5;
     AuthorityUser authority_user = 6;
+    bool canceled = 7;
   }
 
   repeated AppointmentInfo appointment_info = 1;

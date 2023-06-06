@@ -16,7 +16,10 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
-var errSlotAlreadyTaken = status.Error(codes.AlreadyExists, "Выбранное время консультации уже занял другой человек, выберите новое!")
+var (
+	errSlotAlreadyTaken     = status.Error(codes.AlreadyExists, "Выбранное время консультации уже занял другой человек, выберите новое!")
+	errConsultationNotFound = status.Error(codes.NotFound, "Выбрана несуществующая консультация")
+)
 
 // ListConsultationTopics implements the consultation topic listing endpoint.
 func (s *Service) ListConsultationTopics(ctx context.Context, _ *emptypb.Empty) (*desc.ListConsultationTopicsResponse, error) {
@@ -165,6 +168,36 @@ func (s *Service) CreateConsultationAppointment(ctx context.Context, req *desc.C
 	}, nil
 }
 
+// CancelConsultationAppointment implements the consultation appointment cancelation endpoint.
+func (s *Service) CancelConsultationAppointment(ctx context.Context, req *desc.CancelConsultationAppointmentRequest) (*emptypb.Empty, error) {
+	session, authorized := s.authorizeSession(ctx, storage.AccountTypeBusiness)
+	if !authorized {
+		return nil, errUnauthorized
+	}
+
+	businessUser, err := s.db.GetBusinessUser(ctx, session.AccountID)
+	if err != nil {
+		s.logger.Error("failed to get business user during consultation appointment cancelation",
+			"account_id", session.AccountID,
+			"error", err,
+		)
+		return nil, errInternal
+	}
+
+	if err := s.db.CancelConsultationAppointment(ctx, req.Id, businessUser.ID); errors.Is(err, storage.ErrNotFound) {
+		return nil, errConsultationNotFound
+	} else if err != nil {
+		s.logger.Error("failed to mark consultation appointment as canceled in storage",
+			"consultation_id", req.Id,
+			"business_user_id", businessUser.ID,
+			"error", err,
+		)
+		return nil, errInternal
+	}
+
+	return &emptypb.Empty{}, nil
+}
+
 // ListConsultationAppointments implements the appointment listing endpoint for both business and authority users.
 func (s *Service) ListConsultationAppointments(ctx context.Context, _ *emptypb.Empty) (*desc.ListConsultationAppointmentsResponse, error) {
 	session, authorized := s.authorizeSession(ctx)
@@ -211,6 +244,7 @@ func (s *Service) ListConsultationAppointments(ctx context.Context, _ *emptypb.E
 					LastName:      appointment.InspectorUser.LastName,
 					AuthorityName: appointment.InspectorUser.Authority.Name,
 				},
+				Canceled: appointment.CanceledAt != nil,
 			}
 		}),
 	}, nil
