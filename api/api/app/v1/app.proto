@@ -119,13 +119,19 @@ message SendChatBotMessageRequest {
 // The chat bot response containing multiple messages from the bot.
 message SendChatBotMessageResponse {
   repeated string messages = 1;
+  int64 id = 2;
 }
 
 // The chat bot rating request for a previous request+response group.
 message RateChatBotRequest {
-  string request_message = 1;
-  repeated string response_messages = 2;
-  bool rating = 3;
+  enum Rating {
+    RATING_REMOVED = 0;
+    RATING_NEGATIVE = 1;
+    RATING_POSITIVE = 2;
+  }
+
+  int64 id = 1;
+  Rating rating = 2;
 }
 
 // The consultation topic listing response.
