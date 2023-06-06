@@ -43,6 +43,7 @@ type ConsultationAppointment struct {
 	BusinessUser    BusinessUser      `bun:"rel:belongs-to,join:business_user_id=id"`
 	InspectorUserID int64             `bun:"type:bigint"`
 	InspectorUser   InspectorUser     `bun:"rel:belongs-to,join:inspector_user_id=id"`
+	CanceledAt      *time.Time        `bun:"type:timestamptz"`
 }
 
 // CreateTopicsTx creates topics which don't exist yet and returns all of the topics in the DB.
@@ -75,7 +76,7 @@ func (db *Database) CreateConsultationAppointment(ctx context.Context, topicID, 
 		var availableInspectors []InspectorUser
 		err := tx.NewSelect().Model(&availableInspectors).
 			Join("join authority_consultation_slots acs on acs.authority_id = iu.authority_id").
-			Join("left join consultation_appointment ca on ca.slot_id = acs.id and ca.inspector_user_id = iu.id").
+			Join("left join consultation_appointment ca on ca.slot_id = acs.id and ca.inspector_user_id = iu.id and ca.canceled_at is null").
 			Where("acs.id = ?", slotID).
 			Where("ca.id is null").
 			Scan(ctx)
@@ -106,6 +107,26 @@ func (db *Database) CreateConsultationAppointment(ctx context.Context, topicID, 
 	return chosenInspector, nil
 }
 
+// CancelConsultationAppointment labels the specified consultation as canceled if it belongs to this user.
+func (db *Database) CancelConsultationAppointment(ctx context.Context, consultationID string, businessUserID int64) error {
+	result, err := db.bun.NewUpdate().Model((*ConsultationAppointment)(nil)).
+		Set("canceled_at = now()").
+		Where("ca.id = ?", consultationID).
+		Where("ca.business_user_id = ?", businessUserID).
+		Exec(ctx)
+	if err != nil {
+		return wrapError("CancelConsultationAppointment", err)
+	}
+
+	if affected, err := result.RowsAffected(); err != nil {
+		return wrapError("CancelConsultationAppointment.RowsAffected", err)
+	} else if affected < 1 {
+		return ErrNotFound
+	}
+
+	return nil
+}
+
 // ListConsultationTopics returns a list of all of the consultation topics.
 func (db *Database) ListConsultationTopics(ctx context.Context) ([]ConsultationTopic, error) {
 	var topics []ConsultationTopic
@@ -127,8 +148,9 @@ func (db *Database) ListAvailableConsultationDates(ctx context.Context, authorit
 	err := db.bun.NewSelect().Model((*ConsultationSlot)(nil)).
 		Column("acs.from_time").
 		Join("join inspector_user iu on iu.authority_id = acs.authority_id").
-		Join("left join consultation_appointment ca on ca.slot_id = acs.id and ca.inspector_user_id = iu.id").
+		Join("left join consultation_appointment ca on ca.slot_id = acs.id and ca.inspector_user_id = iu.id and ca.canceled_at is null").
 		Where("acs.authority_id = ?", authorityID).
+		Where("acs.from_time > now()").
 		Where("acs.from_time::date >= ?::date", from_date).
 		Where("acs.to_time::date <= ?::date", to_date).
 		Where("ca.id is null").
@@ -148,8 +170,9 @@ func (db *Database) ListAvailableConsultationSlots(ctx context.Context, authorit
 	// Like the query in ListAvailableConsultationDates but filters based on specific date instead of range
 	err := db.bun.NewSelect().Model(&slots).
 		Join("join inspector_user iu on iu.authority_id = acs.authority_id").
-		Join("left join consultation_appointment ca on ca.slot_id = acs.id and ca.inspector_user_id = iu.id").
+		Join("left join consultation_appointment ca on ca.slot_id = acs.id and ca.inspector_user_id = iu.id and ca.canceled_at is null").
 		Where("acs.authority_id = ?", authorityID).
+		Where("acs.from_time > now()").
 		Where("acs.from_time::date = ?::date", date).
 		Where("ca.id is null").
 		Scan(ctx)
@@ -171,7 +194,7 @@ func (db *Database) ListBusinessConsultationAppointments(ctx context.Context, ac
 		Where("account_id = ?", accountID)
 
 	err := db.bun.NewSelect().Model(&appointments).
-		Column("ca.id").
+		Column("ca.id", "ca.canceled_at").
 		ColumnExpr("authority.name as inspector_user__authority__name").
 		Relation("Topic").
 		Relation("Slot").
@@ -199,7 +222,7 @@ func (db *Database) ListInspectorConsultationAppointments(ctx context.Context, a
 		Where("account_id = ?", accountID)
 
 	err := db.bun.NewSelect().Model(&appointments).
-		Column("ca.id").
+		Column("ca.id", "ca.canceled_at").
 		ColumnExpr("authority.name as inspector_user__authority__name").
 		Relation("Topic").
 		Relation("Slot").
