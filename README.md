@@ -1,6 +1,6 @@
 # "Leaders of Digital Transformation" Hackathon, 2023
 
-[RU 🇷🇺](/README.ru.md) - [EN 🇬🇧](/README.md)
+<p align="center"><a href="/README.ru.md">RU 🇷🇺</a> - <a href="/README.md">EN 🇬🇧</a></p>
 
 ## Mobile app to help businesses undergo regulatory inspections
 
