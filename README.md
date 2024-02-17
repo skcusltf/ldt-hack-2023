@@ -14,6 +14,8 @@ A presentation of our solution is available in the repository: [/docs/presentati
 
 ### Solution stack
 
+![Architecture](/docs/architecture-en.png)
+
 - [Flutter](https://flutter.dev/) as the basis of our cross-platform mobile app
 - [Agora](https://www.agora.io/en/) platform for videoconferences
 - [Golang](https://go.dev/) for the backend API which manages the whole system
