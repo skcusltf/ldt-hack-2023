@@ -1,0 +1,213 @@
+syntax = "proto3";
+
+package ldt_hack.app.v1;
+option go_package = "ldt-hack/api/app/v1";
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+
+service AppService {
+  // CreateBusinessUser is a public endpoint for creating a new business user account.
+  // An initialized session token is returned on success.
+  rpc CreateBusinessUser(CreateBusinessUserRequest) returns (SessionToken);
+  // UpdateBusinessUser is an authenticated endpoint which updates the currently authenticated business user's information.
+  rpc UpdateBusinessUser(UpdateBusinessUserRequest) returns (google.protobuf.Empty);
+  // DeleteBusinessUser is an authenticated endpoint which deletes the currently authenticated business user's account.
+  // Information about the user is stored for retrieval in already passed consultations, however,
+  // the user will not be able to login anymore.
+  rpc DeleteBusinessUser(google.protobuf.Empty) returns (google.protobuf.Empty);
+
+  // CreateSession is a public endpoint for creating a new session for an existing user account,
+  // both for businesses and authorities. An initialized session token is returned on success.
+  rpc CreateSession(CreateSessionRequest) returns (SessionToken);
+  // GetSessionUser is an authenticated endpoint which returns the information about the currently authenticated user.
+  rpc GetSessionUser(google.protobuf.Empty) returns (GetSessionUserResponse);
+
+  // SendChatBotMessage is an authenticated endpoint for business users for sending message to
+  // and receiving answers from the chatbot.
+  rpc SendChatBotMessage(SendChatBotMessageRequest) returns (SendChatBotMessageResponse);
+  // RateChatBot is an endpoint for business users to like or dislike a bot's response.
+  rpc RateChatBot(RateChatBotRequest) returns (google.protobuf.Empty);
+
+  // ListConsultationTopics is an authenticated endpoint for business users for listing
+  // possible choices during consultation registration.
+  rpc ListConsultationTopics(google.protobuf.Empty) returns (ListConsultationTopicsResponse);
+  // ListAvailableConsultationDates is an authenticated endpoint for business users for listing
+  // available consultation dates for a specific authority in a given time range.
+  rpc ListAvailableConsultationDates(ListAvailableConsultationDatesRequest) returns (ListAvailableConsultationDatesResponse);
+  // ListAvailableConsultationSlots is an authenticated endpoint for business users for listing
+  // available consultation slots for a specific date during consultation
+  rpc ListAvailableConsultationSlots(ListAvailableConsultationSlotsRequest) returns (ListAvailableConsultationSlotsResponse);
+  // CreateConsultationAppointment is an authenticated endpoint for business users for creating a consultation
+  // appointment using the information retrieved via ListConsultationTopics and ListAvailableConsultationSlots.
+  rpc CreateConsultationAppointment(CreateConsultationAppointmentRequest) returns (CreateConsultationAppointmentResponse);
+  // CancelConsultationAppointment is an authenticated endpoint for business users for canceling a consultation
+  // appointment using the ID retrieved via ListConsultationAppointments.
+  rpc CancelConsultationAppointment(CancelConsultationAppointmentRequest) returns (google.protobuf.Empty);
+  // ListConsultationAppointments is an authenticated endpoint for business and authority users for listing
+  // created consultation appointments with their participation.
+  rpc ListConsultationAppointments(google.protobuf.Empty) returns (ListConsultationAppointmentsResponse);
+}
+
+// Represents a person's sex. Only displayed for business users.
+enum PersonSex {
+  PERSON_SEX_MALE = 0;
+  PERSON_SEX_FEMALE = 1;
+}
+
+// Represents all of the information related to a business user.
+message BusinessUser {
+  string first_name = 1;
+  string patronymic_name = 2;
+  string last_name = 3;
+  PersonSex sex = 4;
+  google.protobuf.Timestamp birth_date = 5;
+  string business_name = 6;
+  string phone_number = 7;
+}
+
+// Represents all of the information related to an authority user.
+message AuthorityUser {
+  string first_name = 1;
+  string last_name = 2;
+  string authority_name = 3;
+}
+
+// Session token required for authenticated requests after session has been created.
+message SessionToken {
+  string token = 1;
+}
+
+// The business user creation request.
+message CreateBusinessUserRequest {
+  string email = 1;
+  string password = 2;
+  BusinessUser user = 3;
+}
+
+// The request to update the current business user's information.
+// All fields must be supplied, using the originally retrieved info if they haven't changed.
+message UpdateBusinessUserRequest {
+  BusinessUser user = 1;
+}
+
+// The session creation request for an already created user.
+message CreateSessionRequest {
+  enum SessionUser {
+    SESSION_USER_BUSINESS = 0;
+    SESSION_USER_AUTHORITY = 1;
+  }
+
+  SessionUser session_user = 1;
+  string email = 2;
+  string password = 3;
+}
+
+// The session user information retrieval response.
+message GetSessionUserResponse {
+  oneof user {
+    BusinessUser business = 1;
+    AuthorityUser authority = 2;
+  };
+}
+
+// The chat bot message request containing a single message to the bot.
+message SendChatBotMessageRequest {
+  string message = 1;
+}
+
+// The chat bot response containing multiple messages from the bot.
+message SendChatBotMessageResponse {
+  repeated string messages = 1;
+  int64 id = 2;
+}
+
+// The chat bot rating request for a previous request+response group.
+message RateChatBotRequest {
+  enum Rating {
+    RATING_REMOVED = 0;
+    RATING_NEGATIVE = 1;
+    RATING_POSITIVE = 2;
+  }
+
+  int64 id = 1;
+  Rating rating = 2;
+}
+
+// The consultation topic listing response.
+message ListConsultationTopicsResponse {
+  message AuthorityTopic {
+    int64 topic_id = 1;
+    string topic_name = 2;
+  }
+
+  message AuthorityTopics {
+    int64 authority_id = 1;
+    string authority_name = 2;
+    repeated AuthorityTopic topics = 3;
+  }
+
+  repeated AuthorityTopics authority_topics = 1;
+}
+
+// The available consultation date listing request.
+message ListAvailableConsultationDatesRequest {
+  int64 authority_id = 1;
+  google.protobuf.Timestamp from_date = 2;
+  google.protobuf.Timestamp to_date = 3;
+}
+
+// The available consultation date listing response.
+message ListAvailableConsultationDatesResponse {
+  repeated google.protobuf.Timestamp available_dates = 2;
+}
+
+// The consultation slot listing request.
+message ListAvailableConsultationSlotsRequest {
+  int64 authority_id = 1;
+  google.protobuf.Timestamp date = 2;
+}
+
+// The consultation slot listing response.
+// from_time and to_time are guaranteed to have the same date as the one that was specified in the request.
+message ListAvailableConsultationSlotsResponse {
+  message ConsultationSlot {
+    int64 id = 1;
+    google.protobuf.Timestamp from_time = 2;
+    google.protobuf.Timestamp to_time = 3;
+  }
+
+  repeated ConsultationSlot consultation_slots = 1;
+}
+
+// The consultation appointment creation request. The fields should be filled in using the
+// information recevied via prior requests (ListConsultationTopics, ListAvailableConsultationSlots).
+message CreateConsultationAppointmentRequest {
+  int64 topic_id = 1;
+  int64 slot_id = 2;
+}
+
+// The consultation appointment creation response, containing additional information to display to the user.
+message CreateConsultationAppointmentResponse {
+  AuthorityUser inspector = 1;
+}
+
+// The consultation cancelation request.
+message CancelConsultationAppointmentRequest {
+  string id = 1;
+}
+
+// The consultation appointment listing response, containing all of the details about a single consultation appointment.
+message ListConsultationAppointmentsResponse {
+  message AppointmentInfo {
+    string id = 1;
+    string topic = 2;
+    google.protobuf.Timestamp from_time = 3;
+    google.protobuf.Timestamp to_time = 4;
+    BusinessUser business_user = 5;
+    AuthorityUser authority_user = 6;
+    bool canceled = 7;
+  }
+
+  repeated AppointmentInfo appointment_info = 1;
+}
