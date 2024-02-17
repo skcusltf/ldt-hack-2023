@@ -1,4 +1,4 @@
-# "Leaders of Digital Transformation" Hackathon, 2023
+# 🥈 "Leaders of Digital Transformation" Hackathon, 2023
 
 <p align="center"><a href="/README.ru.md">RU 🇷🇺</a> - <a href="/README.md">EN 🇬🇧</a></p>
 
@@ -7,6 +7,8 @@
 ![Preview](/docs/preview.png)
 
 We were tasked with developing a mobile application for the [Open Control](https://knd.mos.ru/) system of the city of Moscow, a part of which provides a simple platform for the communication of businesses and regulatory authorities. To improve the user experience for both of the sides, the mobile app needed to have videoconference support, as well as some form of chat bot, which would help with more typical questions better than an FAQ.
+
+At the end of the hackathon our solution was the most functionally complete, and was rated as second 🥈 in the chosen track, losing in terms of the chatbot's capabilities, which ultimately were one of the main evaluation criteria.
 
 A presentation of our solution is available in the repository: [/docs/presentation.pdf](/docs/presentation.pdf).
 
